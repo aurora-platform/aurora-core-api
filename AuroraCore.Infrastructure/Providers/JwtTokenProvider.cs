@@ -4,6 +4,7 @@ using JWT.Algorithms;
 using JWT.Builder;
 using JWT.Exceptions;
 using JWT.Serializers;
+using System;
 using System.Collections.Generic;
 
 namespace AuroraCore.Infrastructure.Providers
@@ -42,11 +43,7 @@ namespace AuroraCore.Infrastructure.Providers
                 Decode(token);
                 return true;
             }
-            catch (TokenExpiredException)
-            {
-                return false;
-            }
-            catch (SignatureVerificationException)
+            catch (Exception)
             {
                 return false;
             }
