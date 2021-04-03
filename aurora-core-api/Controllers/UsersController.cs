@@ -1,6 +1,7 @@
 ﻿using aurora_core_api.DTOs;
 using aurora_core_api.Factories;
 using aurora_core_api.Responses;
+using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
@@ -24,8 +25,8 @@ namespace aurora_core_api.Controllers
         }
 
         [HttpPost]
-        [Route("users/initial-settings")]
-        public Response<object> ConfigureAccount([FromBody] AccountInitSettings settings)
+        [Route("me/initial-setting")]
+        public Response<object> ConfigureCurrentUser([FromBody] AccountInitSettings settings)
         {
             try
             {
@@ -43,8 +44,8 @@ namespace aurora_core_api.Controllers
         }
 
         [HttpPut]
-        [Route("users/topics")]
-        public Response<object> UpdateTopics([FromBody] IEnumerable<Topic> likedTopics)
+        [Route("me/liked-topics")]
+        public Response<object> UpdateCurrentUserLikedTopics([FromBody] IEnumerable<Topic> likedTopics)
         {
             try
             {
@@ -58,6 +59,25 @@ namespace aurora_core_api.Controllers
             catch (Exception ex)
             {
                 return ResponseFactory.Create<object>(Response, HttpStatusCode.InternalServerError, ex.Message, null);
+            }
+        }
+
+        [HttpGet]
+        [Route("me")]
+        public Response<UserProfile> GetCurrentUserProfile()
+        {
+            try
+            {
+                UserProfile userProfile = _userService.GetProfile(GetSubClaim());
+                return ResponseFactory.Ok(Response, "", userProfile);
+            }
+            catch (ValidationException ex)
+            {
+                return ResponseFactory.Create<UserProfile>(Response, HttpStatusCode.BadRequest, ex.Message, null);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.Create<UserProfile>(Response, HttpStatusCode.InternalServerError, ex.Message, null);
             }
         }
     }

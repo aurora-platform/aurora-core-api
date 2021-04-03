@@ -1,6 +1,7 @@
 ﻿using aurora_core_api.DTOs;
 using aurora_core_api.Factories;
 using aurora_core_api.Responses;
+using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
 using AuroraCore.Infrastructure.Providers;
@@ -60,9 +61,9 @@ namespace aurora_core_api.Controllers
 
                 IDictionary<string, object> claims = _jwtTokenProvider.Decode(refreshToken);
 
-                User user = _userService.FindUser(new Guid((string)claims["sub"]));
+                UserProfile userProfile = _userService.GetProfile(new Guid((string)claims["sub"]));
 
-                Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(user.Id);
+                Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(userProfile.Id);
 
                 return ResponseFactory.Ok(Response, "Successfully authenticated", new AuthTokens(tokens.Item1, tokens.Item2));
             }

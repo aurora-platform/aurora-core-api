@@ -1,4 +1,5 @@
-﻿using AuroraCore.Application.Services;
+﻿using AuroraCore.Application.DTOs;
+using AuroraCore.Application.Services;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
 using AuroraCore.UnitTests.Infrastructure.Repositories;
@@ -219,6 +220,56 @@ namespace AuroraCore.UnitTests.Application.Services
             bool same = !user.LikedTopics.Except(likedTopics).Any() && !likedTopics.Except(user.LikedTopics).Any();
 
             Assert.True(same);
+        }
+
+        /**
+         * GetProfile 
+         */
+
+        [Fact]
+        public void ShouldNot_GetProfile_WhenUserNotExists()
+        {
+            var repository = new UserRepositoryMock();
+            var userService = new UserService(repository);
+
+            var user = new User("username", "user@email.com");
+            user.SetAsActive();
+            user.SetAsConfigured();
+
+            repository.Store(user);
+
+            Assert.Throws<ValidationException>(() => userService.GetProfile(Guid.NewGuid()));
+        }
+
+        [Fact]
+        public void ShouldNot_GetProfile_WhenUserIsInvalid()
+        {
+            var repository = new UserRepositoryMock();
+            var userService = new UserService(repository);
+
+            var user = new User("username", "user@email.com");
+            user.SetAsActive();
+
+            repository.Store(user);
+
+            Assert.Throws<ValidationException>(() => userService.GetProfile(user.Id));
+        }
+
+        [Fact]
+        public void Should_GetProfile_ReturnsProfile()
+        {
+            var repository = new UserRepositoryMock();
+            var userService = new UserService(repository);
+
+            var user = new User("username", "user@email.com");
+            user.SetAsActive();
+            user.SetAsConfigured();
+
+            repository.Store(user);
+
+            UserProfile userProfile = userService.GetProfile(user.Id);
+
+            Assert.True(userProfile != null);
         }
     }
 }
