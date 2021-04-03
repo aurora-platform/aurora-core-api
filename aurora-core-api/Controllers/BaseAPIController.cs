@@ -19,7 +19,7 @@ namespace aurora_core_api.Controllers
         {
             string token =  Request.Headers[HeaderNames.Authorization];
 
-            IDictionary<string, object> claims = _jwtTokenProvider.Decode(token);
+            IDictionary<string, object> claims = _jwtTokenProvider.Decode(token.Replace("Bearer ", ""));
 
             return new Guid((string)claims["sub"]);
         }

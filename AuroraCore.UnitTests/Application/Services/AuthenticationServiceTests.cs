@@ -1,13 +1,8 @@
-﻿using AuroraCore.Application.Dependencies;
-using AuroraCore.Application.DTOs;
-using AuroraCore.Application.Services;
+﻿using AuroraCore.Application.Services;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
 using AuroraCore.Infrastructure.Providers;
 using AuroraCore.UnitTests.Infrastructure.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using Xunit;
 
 namespace AuroraCore.UnitTests.Application.Services
@@ -48,11 +43,7 @@ namespace AuroraCore.UnitTests.Application.Services
         [Fact]
         public void ShouldNot_AuthenticateWithPassword_WhenPasswordIsWrong()
         {
-            var authenticationService = new AuthenticationService(
-                new UserRepositoryMock(),
-                new BcryptHashProvider(),
-                new JwtTokenProvider()
-            );
+            var authenticationService = new AuthenticationService(new UserRepositoryMock(), new BcryptHashProvider());
 
             authenticationService.SignUp("user", "user@email.com", "Password@123");
 
@@ -60,87 +51,15 @@ namespace AuroraCore.UnitTests.Application.Services
         }
 
         [Fact]
-        public void Shouldt_AuthenticateWithPassword_ReturnAuthTokens()
+        public void Shouldt_AuthenticateWithPassword_ReturnAuthenticatedUser()
         {
-            var authenticationService = new AuthenticationService(
-                new UserRepositoryMock(),
-                new BcryptHashProvider(),
-                new JwtTokenProvider()
-            );
+            var authenticationService = new AuthenticationService(new UserRepositoryMock(), new BcryptHashProvider());
 
             authenticationService.SignUp("user", "user@email.com", "Password@123");
 
-            AuthTokens tokens = authenticationService.AuthenticateWithPassword("user", "Password@123");
+            User authenticatedUser = authenticationService.AuthenticateWithPassword("user", "Password@123");
 
-            Assert.True(tokens != null);
-        }
-
-        /**
-         * AuthenticateWithRefreshToken
-         */
-
-        [Fact]
-        public void ShouldNot_AuthenticateWithRefreshToken_WithoutRefreshToken()
-        {
-            var authenticationService = new AuthenticationService(
-                new UserRepositoryMock(),
-                new BcryptHashProvider(),
-                new JwtTokenProvider()
-            );
-
-            AuthTokens tokens = authenticationService.SignUp("user", "user@email.com", "Password@123");
-
-            Assert.Throws<ValidationException>(() => authenticationService.AuthenticateWithRefreshToken(""));
-        }
-
-        [Fact]
-        public void ShouldNot_AuthenticateWithRefreshToken_WhenUserNotExists()
-        {
-            IJwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-
-            var authenticationService = new AuthenticationService(
-                new UserRepositoryMock(),
-                new BcryptHashProvider(),
-                jwtTokenProvider
-            );
-
-            AuthTokens tokens = authenticationService.SignUp("user", "user@email.com", "Password@123");
-
-            string token = jwtTokenProvider.CreateToken(new Dictionary<string, object>
-            {
-                { "sub", Guid.NewGuid() },
-                { "exp", DateTimeOffset.UtcNow.AddMonths(1).ToUnixTimeSeconds() }
-            });
-
-            Assert.Throws<ValidationException>(() => _authenticationService.AuthenticateWithRefreshToken(token));
-        }
-
-
-        [Fact]
-        public void ShouldNot_AuthenticateWithRefreshToken_WhenIsModified()
-        {
-            IJwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
-
-            var authenticationService = new AuthenticationService(
-                new UserRepositoryMock(),
-                new BcryptHashProvider(),
-                jwtTokenProvider
-            );
-
-            AuthTokens tokens = authenticationService.SignUp("user", "user@email.com", "Password@123");
-
-            IDictionary<string, object> body = jwtTokenProvider.Decode(tokens.RefreshToken);
-
-            var newBody = $"{{ \"sub\": \"{Guid.NewGuid()}\", \"exp\": {body["exp"]} }}";
-
-            string encoded = Convert.ToBase64String(Encoding.ASCII.GetBytes(newBody));
-
-            string[] parts = tokens.RefreshToken.Split(".");
-            parts[1] = encoded.Remove(encoded.Length - 1);
-
-            string modifiedToken = string.Join(".", parts);
-
-            Assert.Throws<ValidationException>(() => _authenticationService.AuthenticateWithRefreshToken(modifiedToken));
+            Assert.True(authenticatedUser != null);
         }
 
         /**

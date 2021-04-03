@@ -89,7 +89,6 @@ namespace AuroraCore.Infrastructure.Repositories
             if (user.HasLikedTopics())
             {
                 connection.Execute("DELETE FROM users_topics WHERE user_id = @userId", new { userId = user.Id });
-             
                 StoreLikedTopics(user, connection);
             }
 

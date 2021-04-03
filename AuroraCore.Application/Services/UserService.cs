@@ -72,10 +72,19 @@ namespace AuroraCore.Application.Services
                 throw new ValidationException("The user not exists");
             }
 
+            if (!user.IsValid())
+            {
+                throw new ValidationException("Invalid user");
+            }
+
             if (!hasLikedTopics)
             {
                 throw new ValidationException("Must be selected at least 1 topic");
             }
+
+            user.SetLikedTopics(likedTopics);
+
+            _userRepository.Update(user);
         }
     }
 }

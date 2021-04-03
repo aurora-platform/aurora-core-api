@@ -79,5 +79,10 @@ namespace AuroraCore.Domain.Model
         {
             Password = hashedPassword;
         }
+
+        public bool IsValid()
+        {
+            return IsConfigured && IsActivated;
+        }
     }
 }
