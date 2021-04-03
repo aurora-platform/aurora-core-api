@@ -1,5 +1,6 @@
 ﻿using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Services;
+using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
 using AuroraCore.Infrastructure.Providers;
 using AuroraCore.UnitTests.Infrastructure.Repositories;
@@ -14,11 +15,7 @@ namespace AuroraCore.UnitTests.Application.Services
 
         public AuthenticationServiceTests()
         {
-            _authenticationService = new AuthenticationService(
-                new UserRepositoryMock(),
-                new BcryptHashProvider(),
-                new JwtTokenProvider()
-            );
+            _authenticationService = new AuthenticationService(new UserRepositoryMock(), new BcryptHashProvider());
         }
 
         /**
@@ -86,8 +83,8 @@ namespace AuroraCore.UnitTests.Application.Services
         [Fact]
         public void Should_SignUp_Successfully()
         {
-            AuthTokens tokens = _authenticationService.SignUp("user", "user@email.com", "Password@123");
-            Assert.True(tokens != null);
+            User authenticatedUser = _authenticationService.SignUp("user", "user@email.com", "Password@123");
+            Assert.True(authenticatedUser != null);
         }
     }
 

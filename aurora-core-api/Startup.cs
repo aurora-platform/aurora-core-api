@@ -31,14 +31,10 @@ namespace aurora_core_api
 
         private void ConfigureDependencies(IServiceCollection services)
         {
-            services.AddSingleton<IAuthenticationService>(new AuthenticationService(
-                new UserRepository(),
-                new BcryptHashProvider(),
-                new JwtTokenProvider()
-            ));
-
+            services.AddSingleton<IAuthenticationService>(new AuthenticationService(new UserRepository(), new BcryptHashProvider()));
             services.AddSingleton<ITopicService>(new TopicService(new TopicRepository()));
             services.AddSingleton<IUserService>(new UserService(new UserRepository()));
+            services.AddSingleton<IJwtTokenProvider>(new JwtTokenProvider());
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -81,7 +77,7 @@ namespace aurora_core_api
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "aurora_core_api v1"));
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Aurora Core API v1"));
             }
 
             app.UseHttpsRedirection();

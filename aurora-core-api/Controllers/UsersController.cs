@@ -12,7 +12,7 @@ namespace aurora_core_api.Controllers
 {
     [Authorize]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseAPIController
     {
         private readonly IUserService _accountService;
 
@@ -27,7 +27,7 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                _accountService.SetupInitialSettings(settings.UserId, settings.Name, settings.LikedTopics);
+                _accountService.SetupInitialSettings(GetSubClaim(), settings.Name, settings.LikedTopics);
                 return ResponseFactory.Ok(Response, "Account created successfully");
             }
             catch (ValidationException ex)

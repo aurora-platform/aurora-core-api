@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace AuroraCore.Application.Dependencies
+namespace AuroraCore.Infrastructure.Providers
 {
     public interface IJwtTokenProvider
     {
-        string CreateToken(IDictionary<string, object> claims);
+        string CreateAccessToken(Guid userId);
+
+        string CreateRefreshToken(Guid userId);
+
+        Tuple<string, string> CreateTokens(Guid userId);
 
         bool IsValid(string token);
 

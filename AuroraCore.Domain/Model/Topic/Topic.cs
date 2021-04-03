@@ -5,6 +5,10 @@ namespace AuroraCore.Domain.Model
 {
     public class Topic
     {
+        public Topic()
+        {
+        }
+
         public Topic(string name)
         {
             Validation.NotNullOrWhiteSpace(name, "Name is required");
