@@ -1,5 +1,4 @@
 ﻿using AuroraCore.Application.Dependencies;
-using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Application.Providers;
 using AuroraCore.Domain.Model;
@@ -12,18 +11,14 @@ namespace AuroraCore.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly PasswordProvider _passwordProvider;
-        private readonly AuthenticationTokenProvider _tokenGenerationService;
-        private readonly IJwtTokenProvider _jwtProvider;
 
-        public AuthenticationService(IUserRepository userRepository, IHashProvider hashProvider, IJwtTokenProvider jwtTokenProvider)
+        public AuthenticationService(IUserRepository userRepository, IHashProvider hashProvider)
         {
             _userRepository = userRepository;
             _passwordProvider = new PasswordProvider(hashProvider);
-            _tokenGenerationService = new AuthenticationTokenProvider(jwtTokenProvider);
-            _jwtProvider = jwtTokenProvider;
         }
 
-        public AuthTokens AuthenticateWithPassword(string username, string password)
+        public User AuthenticateWithPassword(string username, string password)
         {
             User user = _userRepository.FindByUsername(username);
 
@@ -41,26 +36,7 @@ namespace AuroraCore.Application.Services
                 throw new ValidationException("Username or password is incorrect");
             }
 
-            return _tokenGenerationService.GenerateTokens(user.Id);
-        }
-
-        public AuthTokens AuthenticateWithRefreshToken(string refreshToken)
-        {
-            if (!_jwtProvider.IsValid(refreshToken))
-            {
-                throw new ValidationException("Invalid token");
-            }
-
-            var decoded = _jwtProvider.Decode(refreshToken);
-
-            User user = _userRepository.FindByID(new Guid((string)decoded["sub"]));
-
-            if (user == null)
-            {
-                throw new ValidationException("Invalid token");
-            }
-
-            return _tokenGenerationService.GenerateTokens(user.Id);
+            return user;
         }
 
         private void CheckIfUserExists(string username, string email)
@@ -81,7 +57,7 @@ namespace AuroraCore.Application.Services
             }
         }
 
-        public AuthTokens SignUp(string username, string email, string password)
+        public User SignUp(string username, string email, string password)
         {
             CheckIfUserExists(username, email);
 
@@ -99,7 +75,7 @@ namespace AuroraCore.Application.Services
 
             _userRepository.Store(user);
 
-            return _tokenGenerationService.GenerateTokens(user.Id);
+            return user;
         }
     }
 }

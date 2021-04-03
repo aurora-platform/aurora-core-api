@@ -8,6 +8,7 @@ namespace aurora_core_api.Factories
     {
         public static Response<T> Create<T>(HttpResponse response, HttpStatusCode statusCode, string message, T content)
         {
+
             response.StatusCode = (int)statusCode;
             return new Response<T>(message, content);
         }

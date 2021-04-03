@@ -44,7 +44,45 @@ namespace AuroraCore.Application.Services
 
             user.SetName(name);
             user.SetLikedTopics(likedTopics);
-            user.SetAsConfigured();
+            user.SetAsConfigured(); 
+
+            _userRepository.Update(user);
+        }
+
+        public User FindUser(Guid id)
+        {
+            User user = _userRepository.FindByID(id);
+
+            if (user == null)
+            {
+                throw new ValidationException("User not exists");
+            }
+
+            return user;
+        }
+
+        public void EditLikedTopics(Guid userId, IEnumerable<Topic> likedTopics)
+        {
+            User user = _userRepository.FindByID(userId);
+
+            bool hasLikedTopics = likedTopics != null && likedTopics.Any();
+
+            if (user == null)
+            {
+                throw new ValidationException("The user not exists");
+            }
+
+            if (!user.IsValid())
+            {
+                throw new ValidationException("Invalid user");
+            }
+
+            if (!hasLikedTopics)
+            {
+                throw new ValidationException("Must be selected at least 1 topic");
+            }
+
+            user.SetLikedTopics(likedTopics);
 
             _userRepository.Update(user);
         }

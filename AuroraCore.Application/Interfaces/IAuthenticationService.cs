@@ -1,13 +1,11 @@
-﻿using AuroraCore.Application.DTOs;
+﻿using AuroraCore.Domain.Model;
 
 namespace AuroraCore.Application.Interfaces
 {
     public interface IAuthenticationService
     {
-        AuthTokens AuthenticateWithPassword(string username, string password);
+        User AuthenticateWithPassword(string username, string password);
 
-        AuthTokens AuthenticateWithRefreshToken(string refreshToken);
-
-        AuthTokens SignUp(string username, string email, string password);
+        User SignUp(string username, string email, string password);
     }
 }

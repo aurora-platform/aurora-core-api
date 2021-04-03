@@ -1,23 +1,29 @@
 ﻿using aurora_core_api.DTOs;
 using aurora_core_api.Factories;
 using aurora_core_api.Responses;
-using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
+using AuroraCore.Domain.Model;
+using AuroraCore.Infrastructure.Providers;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net;
 
 namespace aurora_core_api.Controllers
 {
     [ApiController]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController : BaseAPIController
     {
         private readonly IAuthenticationService _authenticationService;
+        private readonly IJwtTokenProvider _jwtTokenProvider;
+        private readonly IUserService _userService;
 
-        public AuthenticationController(IAuthenticationService authenticationService)
+        public AuthenticationController(IAuthenticationService authenticationService, IJwtTokenProvider jwtTokenProvider, IUserService userService)
         {
             _authenticationService = authenticationService;
+            _jwtTokenProvider = jwtTokenProvider;
+            _userService = userService;
         }
 
         [HttpPost]
@@ -26,8 +32,10 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                AuthTokens tokens = _authenticationService.AuthenticateWithPassword(request.Username, request.Password);
-                return ResponseFactory.Ok(Response, "Successfully authenticated", tokens);
+                User authenticatedUser = _authenticationService.AuthenticateWithPassword(request.Username, request.Password);
+                Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(authenticatedUser.Id);
+
+                return ResponseFactory.Ok(Response, "Successfully authenticated", new AuthTokens(tokens.Item1, tokens.Item2));
             }
             catch (ValidationException ex)
             {
@@ -45,8 +53,18 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                AuthTokens tokens = _authenticationService.AuthenticateWithRefreshToken(refreshToken);
-                return ResponseFactory.Ok(Response, "Successfully authenticated", tokens);
+                if (!_jwtTokenProvider.IsValid(refreshToken))
+                {
+                    throw new ValidationException("Invalid token");
+                }
+
+                IDictionary<string, object> claims = _jwtTokenProvider.Decode(refreshToken);
+
+                User user = _userService.FindUser(new Guid((string)claims["sub"]));
+
+                Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(user.Id);
+
+                return ResponseFactory.Ok(Response, "Successfully authenticated", new AuthTokens(tokens.Item1, tokens.Item2));
             }
             catch (ValidationException ex)
             {
@@ -64,8 +82,10 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                AuthTokens tokens = _authenticationService.SignUp(request.Username, request.Email, request.Password);
-                return ResponseFactory.Ok(Response, "Account created successfully", tokens);
+                User createdUser = _authenticationService.SignUp(request.Username, request.Email, request.Password);
+                Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(createdUser.Id);
+
+                return ResponseFactory.Ok(Response, "Account created successfully", new AuthTokens(tokens.Item1, tokens.Item2));
             }
             catch (ValidationException ex)
             {

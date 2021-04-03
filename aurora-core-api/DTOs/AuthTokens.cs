@@ -1,4 +1,4 @@
-﻿namespace AuroraCore.Application.DTOs
+﻿namespace aurora_core_api.DTOs
 {
     public class AuthTokens
     {

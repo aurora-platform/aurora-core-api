@@ -7,5 +7,9 @@ namespace AuroraCore.Application.Interfaces
     public interface IUserService
     {
         void SetupInitialSettings(Guid id, string name, IEnumerable<Topic> likedTopics);
+
+        void EditLikedTopics(Guid id, IEnumerable<Topic> likedTopics);
+
+        User FindUser(Guid id);
     }
 }
