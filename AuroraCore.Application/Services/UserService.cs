@@ -1,4 +1,5 @@
-﻿using AuroraCore.Application.Interfaces;
+﻿using AuroraCore.Application.DTOs;
+using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
 using System;
@@ -49,7 +50,7 @@ namespace AuroraCore.Application.Services
             _userRepository.Update(user);
         }
 
-        public User FindUser(Guid id)
+        public UserProfile GetProfile(Guid id)
         {
             User user = _userRepository.FindByID(id);
 
@@ -58,14 +59,17 @@ namespace AuroraCore.Application.Services
                 throw new ValidationException("User not exists");
             }
 
-            return user;
+            if (!user.IsValid())
+            {
+                throw new ValidationException("Invalid user");
+            }
+
+            return new UserProfile(user);
         }
 
         public void EditLikedTopics(Guid userId, IEnumerable<Topic> likedTopics)
         {
             User user = _userRepository.FindByID(userId);
-
-            bool hasLikedTopics = likedTopics != null && likedTopics.Any();
 
             if (user == null)
             {
@@ -77,14 +81,12 @@ namespace AuroraCore.Application.Services
                 throw new ValidationException("Invalid user");
             }
 
-            if (!hasLikedTopics)
+            if (!user.HasLikedTopics())
             {
                 throw new ValidationException("Must be selected at least 1 topic");
             }
 
-            user.SetLikedTopics(likedTopics);
-
-            _userRepository.Update(user);
+            _userRepository.UpdateLikedTopics(user.Id, likedTopics);
         }
     }
 }

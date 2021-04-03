@@ -1,4 +1,5 @@
-﻿using AuroraCore.Domain.Model;
+﻿using AuroraCore.Application.DTOs;
+using AuroraCore.Domain.Model;
 using System;
 using System.Collections.Generic;
 
@@ -10,6 +11,6 @@ namespace AuroraCore.Application.Interfaces
 
         void EditLikedTopics(Guid id, IEnumerable<Topic> likedTopics);
 
-        User FindUser(Guid id);
+        UserProfile GetProfile(Guid id);
     }
 }

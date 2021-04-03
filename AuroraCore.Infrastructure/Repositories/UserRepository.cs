@@ -4,6 +4,7 @@ using System;
 using Dapper;
 using Npgsql;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AuroraCore.Infrastructure.Repositories
 {
@@ -18,7 +19,16 @@ namespace AuroraCore.Infrastructure.Repositories
         public User FindByID(Guid id)
         {
             using var connection = ConnectionFactory.GetConnection();
-            return connection.QuerySingleOrDefault<User>("SELECT * FROM users WHERE id = @id", new { id });
+            User user = connection.QuerySingleOrDefault<User>("SELECT * FROM users WHERE id = @id", new { id });
+
+            user.SetLikedTopics(connection.Query<Topic>(
+                @"SELECT t.* FROM users_topics ut
+                INNER JOIN topics t ON t.id = ut.topic_id
+                WHERE ut.user_id = @id",
+                new { id }
+            ));
+
+            return user;
         }
 
         public User FindByUsername(string username)
@@ -41,36 +51,33 @@ namespace AuroraCore.Infrastructure.Repositories
 
             if (user.HasLikedTopics())
             {
-                StoreLikedTopics(user, connection);
+                StoreLikedTopics(user.Id, user.LikedTopics, connection);
             }
 
             transaction.Commit();
             connection.Close();
         }
 
-        private static string BuildPreparedStatement(User user)
+        private static string BuildPreparedStatement(Guid userId, IEnumerable<Topic> likedTopics)
         {
             var query = $"PREPARE bulkinsert (uuid, uuid) AS INSERT INTO users_topics (user_id, topic_id) VALUES ($1, $2);";
 
-            foreach (var topic in user.LikedTopics)
+            foreach (var topic in likedTopics)
             {
-                query += $"EXECUTE bulkinsert('{user.Id}', '{topic.Id}');";
+                query += $"EXECUTE bulkinsert('{userId}', '{topic.Id}');";
             }
 
             return query += "DEALLOCATE bulkinsert;";
         }
 
-        public void StoreLikedTopics(User user, NpgsqlConnection connection)
+        public static void StoreLikedTopics(Guid userId, IEnumerable<Topic> likedTopics, NpgsqlConnection connection)
         {
-            connection.Execute(BuildPreparedStatement(user));
+            connection.Execute(BuildPreparedStatement(userId, likedTopics));
         }
 
         public void Update(User user)
         {
             using var connection = ConnectionFactory.GetConnection();
-            connection.Open();
-            using var transaction = connection.BeginTransaction();
-
             connection.Execute(
                 @"UPDATE users
                     SET name = @Name,
@@ -85,15 +92,6 @@ namespace AuroraCore.Infrastructure.Repositories
                 WHERE id = @Id",
                 user
             );
-
-            if (user.HasLikedTopics())
-            {
-                connection.Execute("DELETE FROM users_topics WHERE user_id = @userId", new { userId = user.Id });
-                StoreLikedTopics(user, connection);
-            }
-
-            transaction.Commit();
-            connection.Close();
         }
 
         public IEnumerable<User> GetAll()
@@ -105,6 +103,24 @@ namespace AuroraCore.Infrastructure.Repositories
         {
             using var connection = ConnectionFactory.GetConnection();
             return connection.QuerySingleOrDefault<User>("SELECT * FROM users WHERE email = @email or username = @username", new { username, email });
+        }
+
+        public void UpdateLikedTopics(Guid userId, IEnumerable<Topic> likedTopics)
+        {
+            using var connection = ConnectionFactory.GetConnection();
+            connection.Open();
+            using var transaction = connection.BeginTransaction();
+
+            var hasLikedTopics = likedTopics != null && likedTopics.Any();
+
+            if (hasLikedTopics)
+            {
+                connection.Execute("DELETE FROM users_topics WHERE user_id = @userId", new { userId });
+                StoreLikedTopics(userId, likedTopics, connection);
+            }
+
+            transaction.Commit();
+            connection.Close();
         }
     }
 }

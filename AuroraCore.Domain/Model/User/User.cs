@@ -8,6 +8,18 @@ namespace AuroraCore.Domain.Model
 {
     public class User
     {
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public string Username { get; private set; }
+        public string Password { get; private set; }
+        public string Email { get; private set; }
+        public string Phone { get; private set; }
+        public string ImageURL { get; private set; }
+        public string AboutMe { get; private set; }
+        public bool IsActivated { get; private set; }
+        public bool IsConfigured { get; private set; }
+        public IEnumerable<Topic> LikedTopics { get; private set; }
+
         public User() { }
 
         public User(string username, string email)
@@ -24,30 +36,6 @@ namespace AuroraCore.Domain.Model
             Username = username;
             Email = email;
         }
-
-        public Guid Id { get; private set; }
-
-        public string Name { get; private set; }
-
-        public string Username { get; private set; }
-
-        public string Password { get; private set; }
-
-        public string Email { get; private set; }
-
-        public string Phone { get; private set; }
-
-        public string ImageURL { get; private set; }
-
-        public string AboutMe { get; private set; }
-
-        public bool IsActivated { get; private set; }
-
-        public bool IsConfigured { get; private set; }
-
-        public IEnumerable<Channel> Channels { get; private set; }
-
-        public IEnumerable<Topic> LikedTopics { get; private set; }
 
         public bool HasLikedTopics()
         {

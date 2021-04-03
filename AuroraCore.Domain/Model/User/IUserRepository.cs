@@ -1,4 +1,6 @@
 ﻿using AuroraCore.Domain.Shared;
+using System;
+using System.Collections.Generic;
 
 namespace AuroraCore.Domain.Model
 {
@@ -7,5 +9,7 @@ namespace AuroraCore.Domain.Model
         User FindByUsername(string username);
 
         User FindByUsernameOrEmail(string username, string email);
+
+        void UpdateLikedTopics(Guid userId, IEnumerable<Topic> likedTopics);
     }
 }
