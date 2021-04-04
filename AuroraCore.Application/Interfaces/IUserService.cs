@@ -14,5 +14,7 @@ namespace AuroraCore.Application.Interfaces
         UserProfile GetProfile(Guid id);
 
         void EditProfile(UserProfile userProfile);
+
+        void ChangePassword(Guid id, string currentPassword, string newPassword, string confirmNewPassword);
     }
 }

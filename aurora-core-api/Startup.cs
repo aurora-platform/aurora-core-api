@@ -34,7 +34,7 @@ namespace aurora_core_api
         {
             services.AddSingleton<IAuthenticationService>(new AuthenticationService(new UserRepository(), new BcryptHashProvider()));
             services.AddSingleton<ITopicService>(new TopicService(new TopicRepository()));
-            services.AddSingleton<IUserService>(new UserService(new UserRepository(), MapperFactory.Create()));
+            services.AddSingleton<IUserService>(new UserService(new UserRepository(), MapperFactory.Create(), new BcryptHashProvider()));
             services.AddSingleton<IJwtTokenProvider>(new JwtTokenProvider());
         }
 
