@@ -1,6 +1,4 @@
-﻿using AuroraCore.Application.Dependencies;
-using AuroraCore.Application.Interfaces;
-using AuroraCore.Application.Providers;
+﻿using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
 using System;
@@ -10,12 +8,12 @@ namespace AuroraCore.Application.Services
     public class AuthenticationService : IAuthenticationService
     {
         private readonly IUserRepository _userRepository;
-        private readonly PasswordProvider _passwordProvider;
+        private readonly PasswordService _passwordService;
 
         public AuthenticationService(IUserRepository userRepository, IHashProvider hashProvider)
         {
             _userRepository = userRepository;
-            _passwordProvider = new PasswordProvider(hashProvider);
+            _passwordService = new PasswordService(hashProvider);
         }
 
         public User AuthenticateWithPassword(string username, string password)
@@ -29,7 +27,7 @@ namespace AuroraCore.Application.Services
 
             try
             {
-                _passwordProvider.Verify(password, user.Password);
+                _passwordService.Verify(password, user.Password);
             }
             catch (Exception)
             {
@@ -68,7 +66,7 @@ namespace AuroraCore.Application.Services
                 throw new ValidationException("Password is required");
             }
 
-            var protectedPassword = _passwordProvider.Protect(password);
+            var protectedPassword = _passwordService.Protect(password);
 
             user.SetPassword(protectedPassword);
             user.SetAsActive();

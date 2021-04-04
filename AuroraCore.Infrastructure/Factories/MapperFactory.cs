@@ -1,5 +1,5 @@
-﻿using AuroraCore.Application.Dependencies;
-using AuroraCore.Application.DTOs;
+﻿using AuroraCore.Application.DTOs;
+using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
 using AuroraCore.Infrastructure.Utils;
 
