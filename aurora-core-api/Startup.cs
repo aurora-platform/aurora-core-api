@@ -2,6 +2,7 @@ using aurora_core_api.Utils;
 using AuroraCore.Application.Dependencies;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Application.Services;
+using AuroraCore.Infrastructure.Factories;
 using AuroraCore.Infrastructure.Providers;
 using AuroraCore.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,7 +34,7 @@ namespace aurora_core_api
         {
             services.AddSingleton<IAuthenticationService>(new AuthenticationService(new UserRepository(), new BcryptHashProvider()));
             services.AddSingleton<ITopicService>(new TopicService(new TopicRepository()));
-            services.AddSingleton<IUserService>(new UserService(new UserRepository()));
+            services.AddSingleton<IUserService>(new UserService(new UserRepository(), MapperFactory.Create()));
             services.AddSingleton<IJwtTokenProvider>(new JwtTokenProvider());
         }
 

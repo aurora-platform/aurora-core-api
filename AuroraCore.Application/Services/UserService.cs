@@ -1,4 +1,5 @@
-﻿using AuroraCore.Application.DTOs;
+﻿using AuroraCore.Application.Dependencies;
+using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
@@ -11,10 +12,25 @@ namespace AuroraCore.Application.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IObjectMapper _mapper;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IObjectMapper mapper)
         {
             _userRepository = userRepository;
+            _mapper = mapper;
+        }
+
+        private static void ValidateUser(User user)
+        {
+            if (user == null)
+            {
+                throw new ValidationException("User not exists");
+            }
+
+            if (!user.IsValid())
+            {
+                throw new ValidationException("Invalid user");
+            }
         }
 
         public void SetupInitialSettings(Guid id, string name, IEnumerable<Topic> likedTopics)
@@ -54,32 +70,29 @@ namespace AuroraCore.Application.Services
         {
             User user = _userRepository.FindByID(id);
 
-            if (user == null)
-            {
-                throw new ValidationException("User not exists");
-            }
-
-            if (!user.IsValid())
-            {
-                throw new ValidationException("Invalid user");
-            }
+            ValidateUser(user);
 
             return new UserProfile(user);
+        }
+
+        public void EditProfile(UserProfile userProfile)
+        {
+            User user = _userRepository.FindByID(userProfile.Id);
+
+            ValidateUser(user);
+
+            userProfile.Email = user.Email;
+
+            User mappedUser = _mapper.Map(userProfile, user);
+
+            _userRepository.Update(mappedUser);
         }
 
         public void EditLikedTopics(Guid userId, IEnumerable<Topic> likedTopics)
         {
             User user = _userRepository.FindByID(userId);
 
-            if (user == null)
-            {
-                throw new ValidationException("The user not exists");
-            }
-
-            if (!user.IsValid())
-            {
-                throw new ValidationException("Invalid user");
-            }
+            ValidateUser(user);
 
             if (!user.HasLikedTopics())
             {

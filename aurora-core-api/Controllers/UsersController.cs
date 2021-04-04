@@ -80,5 +80,24 @@ namespace aurora_core_api.Controllers
                 return ResponseFactory.Create<UserProfile>(Response, HttpStatusCode.InternalServerError, ex.Message, null);
             }
         }
+
+        [HttpPut]
+        [Route("me")]
+        public Response<object> EditCurrentUserProfile([FromBody] UserProfile userProfile)
+        {
+            try
+            {
+                _userService.EditProfile(userProfile);
+                return ResponseFactory.Ok(Response, "Profile edited successfully");
+            }
+            catch (ValidationException ex)
+            {
+                return ResponseFactory.Create(Response, HttpStatusCode.BadRequest, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.Create(Response, HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
     }
 }

@@ -12,5 +12,7 @@ namespace AuroraCore.Application.Interfaces
         void EditLikedTopics(Guid id, IEnumerable<Topic> likedTopics);
 
         UserProfile GetProfile(Guid id);
+
+        void EditProfile(UserProfile userProfile);
     }
 }

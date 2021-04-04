@@ -6,6 +6,17 @@ namespace AuroraCore.Application.DTOs
 {
     public class UserProfile
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string ImageURL { get; set; }
+        public string AboutMe { get; set; }
+        public IEnumerable<Topic> LikedTopics { get; set; }
+
+        public UserProfile() { }
+
         public UserProfile(User user)
         {
             Id = user.Id;
@@ -17,14 +28,5 @@ namespace AuroraCore.Application.DTOs
             AboutMe = user.AboutMe;
             LikedTopics = user.LikedTopics;
         }
-
-        public Guid Id { get; private set; }
-        public string Name { get; private set; }
-        public string Username { get; private set; }
-        public string Email { get; private set; }
-        public string Phone { get; private set; }
-        public string ImageURL { get; private set; }
-        public string AboutMe { get; private set; }
-        public IEnumerable<Topic> LikedTopics { get; private set; }
     }
 }
