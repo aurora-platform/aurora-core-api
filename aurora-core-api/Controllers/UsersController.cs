@@ -1,5 +1,4 @@
 ﻿using aurora_core_api.DTOs;
-using aurora_core_api.Factories;
 using aurora_core_api.Responses;
 using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
@@ -9,13 +8,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Net;
 
 namespace aurora_core_api.Controllers
 {
     [Authorize]
     [ApiController]
-    public class UsersController : BaseAPIController
+    public class UsersController : ApiControllerBase
     {
         private readonly IUserService _userService;
 
@@ -30,16 +28,13 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                _userService.SetupInitialSettings(GetSubClaim(), settings.Name, settings.LikedTopics);
-                return ResponseFactory.Ok(Response, "Configured successfully");
+                _userService.SetupInitialSettings(Guid.NewGuid(), settings.Name, settings.LikedTopics);
+
+                return Ok("Configured successfully");
             }
             catch (ValidationException ex)
             {
-                return ResponseFactory.Create<object>(Response, HttpStatusCode.BadRequest, ex.Message, null);
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.Create<object>(Response, HttpStatusCode.InternalServerError, ex.Message, null);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -49,16 +44,13 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                _userService.EditLikedTopics(GetSubClaim(), likedTopics);
-                return ResponseFactory.Ok(Response, "Edited successfully");
+                _userService.EditLikedTopics(Guid.NewGuid(), likedTopics);
+
+                return Ok("Edited successfully");
             }
             catch (ValidationException ex)
             {
-                return ResponseFactory.Create<object>(Response, HttpStatusCode.BadRequest, ex.Message, null);
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.Create<object>(Response, HttpStatusCode.InternalServerError, ex.Message, null);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -68,16 +60,13 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                UserProfile userProfile = _userService.GetProfile(GetSubClaim());
-                return ResponseFactory.Ok(Response, "", userProfile);
+                UserProfile userProfile = _userService.GetProfile(Guid.NewGuid());
+                
+                return Ok(userProfile);
             }
             catch (ValidationException ex)
             {
-                return ResponseFactory.Create<UserProfile>(Response, HttpStatusCode.BadRequest, ex.Message, null);
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.Create<UserProfile>(Response, HttpStatusCode.InternalServerError, ex.Message, null);
+                return BadRequest<UserProfile>(ex.Message);
             }
         }
 
@@ -88,15 +77,12 @@ namespace aurora_core_api.Controllers
             try
             {
                 _userService.EditProfile(userProfile);
-                return ResponseFactory.Ok(Response, "Profile edited successfully");
+
+                return Ok("Profile edited successfully");
             }
             catch (ValidationException ex)
             {
-                return ResponseFactory.Create(Response, HttpStatusCode.BadRequest, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.Create(Response, HttpStatusCode.InternalServerError, ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -107,16 +93,13 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                _userService.ChangePassword(GetSubClaim(), request.Current, request.New, request.Confirmation);
-                return ResponseFactory.Ok(Response, "Password changed successfully");
+                _userService.ChangePassword(GetCurrentUser().Id, request.Current, request.New, request.Confirmation);
+
+                return Ok("Password changed successfully");
             }
             catch (ValidationException ex)
             {
-                return ResponseFactory.Create<object>(Response, HttpStatusCode.BadRequest, ex.Message, null);
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.Create<object>(Response, HttpStatusCode.InternalServerError, ex.Message, null);
+                return BadRequest(ex.Message);
             }
         }
     }

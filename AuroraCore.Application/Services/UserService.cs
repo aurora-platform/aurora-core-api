@@ -1,7 +1,5 @@
-﻿using AuroraCore.Application.Dependencies;
-using AuroraCore.Application.DTOs;
+﻿using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
-using AuroraCore.Application.Providers;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
 using System;
@@ -14,13 +12,13 @@ namespace AuroraCore.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IObjectMapper _mapper;
-        private readonly PasswordProvider _passwordProvider;
+        private readonly PasswordService _passwordService;
 
         public UserService(IUserRepository userRepository, IObjectMapper mapper, IHashProvider hashProvider)
         {
             _userRepository = userRepository;
             _mapper = mapper;
-            _passwordProvider = new PasswordProvider(hashProvider);
+            _passwordService = new PasswordService(hashProvider);
         }
 
         private static void ValidateUser(User user)
@@ -107,7 +105,7 @@ namespace AuroraCore.Application.Services
             User user = _userRepository.FindByID(userId);
             ValidateUser(user);
 
-            _passwordProvider.Verify(currentPassword, user.Password);
+            _passwordService.Verify(currentPassword, user.Password);
 
             if (currentPassword == newPassword)
             {
@@ -119,7 +117,7 @@ namespace AuroraCore.Application.Services
                 throw new ValidationException("The new password and confirmation are not the same");
             }
 
-            string protectedNewPassword = _passwordProvider.Protect(newPassword);
+            string protectedNewPassword = _passwordService.Protect(newPassword);
 
             user.SetPassword(protectedNewPassword);
 

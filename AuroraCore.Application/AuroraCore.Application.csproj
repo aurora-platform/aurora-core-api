@@ -8,4 +8,9 @@
     <ProjectReference Include="..\AuroraCore.Domain\AuroraCore.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dependencies\" />
+    <Folder Include="Providers\" />
+  </ItemGroup>
+
 </Project>

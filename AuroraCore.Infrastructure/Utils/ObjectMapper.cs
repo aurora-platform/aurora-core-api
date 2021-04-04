@@ -1,4 +1,4 @@
-﻿using AuroraCore.Application.Dependencies;
+﻿using AuroraCore.Application.Interfaces;
 
 namespace AuroraCore.Infrastructure.Utils
 {

@@ -1,4 +1,4 @@
-﻿using AuroraCore.Application.Dependencies;
+﻿using AuroraCore.Application.Interfaces;
 using System;
 using Bcrypt = BCrypt.Net.BCrypt;
 
@@ -15,7 +15,8 @@ namespace AuroraCore.Infrastructure.Providers
         {
             bool isValid = Bcrypt.Verify(password, hash);
 
-            if (!isValid) {
+            if (!isValid)
+            {
                 throw new Exception("Invalid password");
             }
         }

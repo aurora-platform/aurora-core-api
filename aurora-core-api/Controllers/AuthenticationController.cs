@@ -1,5 +1,4 @@
 ﻿using aurora_core_api.DTOs;
-using aurora_core_api.Factories;
 using aurora_core_api.Responses;
 using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
@@ -9,22 +8,21 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Net;
 
 namespace aurora_core_api.Controllers
 {
     [ApiController]
-    public class AuthenticationController : BaseAPIController
+    public class AuthenticationController : ApiControllerBase
     {
         private readonly IAuthenticationService _authenticationService;
-        private readonly IJwtTokenProvider _jwtTokenProvider;
         private readonly IUserService _userService;
+        private readonly IJwtTokenProvider _jwtTokenProvider;
 
-        public AuthenticationController(IAuthenticationService authenticationService, IJwtTokenProvider jwtTokenProvider, IUserService userService)
+        public AuthenticationController(IAuthenticationService authenticationService, IUserService userService, IJwtTokenProvider jwtTokenProvider)
         {
             _authenticationService = authenticationService;
-            _jwtTokenProvider = jwtTokenProvider;
             _userService = userService;
+            _jwtTokenProvider = jwtTokenProvider;
         }
 
         [HttpPost]
@@ -36,15 +34,11 @@ namespace aurora_core_api.Controllers
                 User authenticatedUser = _authenticationService.AuthenticateWithPassword(request.Username, request.Password);
                 Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(authenticatedUser.Id);
 
-                return ResponseFactory.Ok(Response, "Successfully authenticated", new AuthTokens(tokens.Item1, tokens.Item2));
+                return Ok(new AuthTokens(tokens.Item1, tokens.Item2));
             }
             catch (ValidationException ex)
             {
-                return ResponseFactory.Create<AuthTokens>(Response, HttpStatusCode.BadRequest, ex.Message, null);
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.Create<AuthTokens>(Response, HttpStatusCode.InternalServerError, ex.Message, null);
+                return BadRequest<AuthTokens>(ex.Message);
             }
         }
 
@@ -65,15 +59,11 @@ namespace aurora_core_api.Controllers
 
                 Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(userProfile.Id);
 
-                return ResponseFactory.Ok(Response, "Successfully authenticated", new AuthTokens(tokens.Item1, tokens.Item2));
+                return Ok(new AuthTokens(tokens.Item1, tokens.Item2));
             }
             catch (ValidationException ex)
             {
-                return ResponseFactory.Create<AuthTokens>(Response, HttpStatusCode.BadRequest, ex.Message, null);
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.Create<AuthTokens>(Response, HttpStatusCode.InternalServerError, ex.Message, null);
+                return BadRequest<AuthTokens>(ex.Message);
             }
         }
 
@@ -86,15 +76,11 @@ namespace aurora_core_api.Controllers
                 User createdUser = _authenticationService.SignUp(request.Username, request.Email, request.Password);
                 Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(createdUser.Id);
 
-                return ResponseFactory.Ok(Response, "Account created successfully", new AuthTokens(tokens.Item1, tokens.Item2));
+                return Created(new AuthTokens(tokens.Item1, tokens.Item2));
             }
             catch (ValidationException ex)
             {
-                return ResponseFactory.Create<AuthTokens>(Response, HttpStatusCode.BadRequest, ex.Message, null);
-            }
-            catch (Exception ex)
-            {
-                return ResponseFactory.Create<AuthTokens>(Response, HttpStatusCode.InternalServerError, ex.Message, null);
+                return BadRequest<AuthTokens>(ex.Message);
             }
         }
     }

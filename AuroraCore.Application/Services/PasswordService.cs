@@ -1,16 +1,15 @@
-﻿using AuroraCore.Application.Dependencies;
+﻿using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Shared;
-using System;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace AuroraCore.Application.Providers
+namespace AuroraCore.Application.Services
 {
-    public class PasswordProvider
+    public class PasswordService
     {
-        private IHashProvider _hashProvider { get; }
+        private readonly IHashProvider _hashProvider;
 
-        public PasswordProvider(IHashProvider hashProvider)
+        public PasswordService(IHashProvider hashProvider)
         {
             _hashProvider = hashProvider;
         }

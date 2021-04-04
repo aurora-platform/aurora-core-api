@@ -1,4 +1,4 @@
-﻿namespace AuroraCore.Application.Dependencies
+﻿namespace AuroraCore.Application.Interfaces
 {
     public interface IObjectMapper
     {
