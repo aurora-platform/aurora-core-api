@@ -99,5 +99,25 @@ namespace aurora_core_api.Controllers
                 return ResponseFactory.Create(Response, HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+
+        [HttpPut]
+        [Route("me/password")]
+        public Response<object> ChangeCurrentUserPassword([FromBody] ChangePasswordRequest request)
+        {
+            try
+            {
+                _userService.ChangePassword(GetSubClaim(), request.Current, request.New, request.Confirmation);
+                return ResponseFactory.Ok(Response, "Password changed successfully");
+            }
+            catch (ValidationException ex)
+            {
+                return ResponseFactory.Create<object>(Response, HttpStatusCode.BadRequest, ex.Message, null);
+            }
+            catch (Exception ex)
+            {
+                return ResponseFactory.Create<object>(Response, HttpStatusCode.InternalServerError, ex.Message, null);
+            }
+        }
     }
 }

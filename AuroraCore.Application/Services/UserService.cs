@@ -1,6 +1,7 @@
 ﻿using AuroraCore.Application.Dependencies;
 using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
+using AuroraCore.Application.Providers;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
 using System;
@@ -13,11 +14,13 @@ namespace AuroraCore.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IObjectMapper _mapper;
+        private readonly PasswordProvider _passwordProvider;
 
-        public UserService(IUserRepository userRepository, IObjectMapper mapper)
+        public UserService(IUserRepository userRepository, IObjectMapper mapper, IHashProvider hashProvider)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _passwordProvider = new PasswordProvider(hashProvider);
         }
 
         private static void ValidateUser(User user)
@@ -69,7 +72,6 @@ namespace AuroraCore.Application.Services
         public UserProfile GetProfile(Guid id)
         {
             User user = _userRepository.FindByID(id);
-
             ValidateUser(user);
 
             return new UserProfile(user);
@@ -78,7 +80,6 @@ namespace AuroraCore.Application.Services
         public void EditProfile(UserProfile userProfile)
         {
             User user = _userRepository.FindByID(userProfile.Id);
-
             ValidateUser(user);
 
             userProfile.Email = user.Email;
@@ -91,7 +92,6 @@ namespace AuroraCore.Application.Services
         public void EditLikedTopics(Guid userId, IEnumerable<Topic> likedTopics)
         {
             User user = _userRepository.FindByID(userId);
-
             ValidateUser(user);
 
             if (!user.HasLikedTopics())
@@ -100,6 +100,30 @@ namespace AuroraCore.Application.Services
             }
 
             _userRepository.UpdateLikedTopics(user.Id, likedTopics);
+        }
+
+        public void ChangePassword(Guid userId, string currentPassword, string newPassword, string confirmNewPassword)
+        {
+            User user = _userRepository.FindByID(userId);
+            ValidateUser(user);
+
+            _passwordProvider.Verify(currentPassword, user.Password);
+
+            if (currentPassword == newPassword)
+            {
+                throw new ValidationException("The new password and current are the same");
+            }
+
+            if (newPassword != confirmNewPassword)
+            {
+                throw new ValidationException("The new password and confirmation are not the same");
+            }
+
+            string protectedNewPassword = _passwordProvider.Protect(newPassword);
+
+            user.SetPassword(protectedNewPassword);
+
+            _userRepository.Update(user);
         }
     }
 }
