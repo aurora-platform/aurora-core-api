@@ -52,6 +52,12 @@ namespace AuroraCore.Domain.Model
             IsActivated = true;
         }
 
+        public void SetEmail(string email)
+        {
+            Validation.NotNullOrWhiteSpace(email, "Email is required");
+            Email = email;
+        }
+
         public void SetName(string name)
         {
             Validation.NotNullOrWhiteSpace(name, "Name is required");

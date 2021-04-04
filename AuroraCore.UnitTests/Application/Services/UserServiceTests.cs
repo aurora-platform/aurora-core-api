@@ -2,6 +2,7 @@
 using AuroraCore.Application.Services;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
+using AuroraCore.Infrastructure.Factories;
 using AuroraCore.UnitTests.Infrastructure.Repositories;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void ShouldNot_SetupInitialSettings_WhenUserNotExists()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             repository.Store(new User("username", "user@email.com"));
 
@@ -33,7 +34,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void ShouldNot_SetupInitialSettings_WithoutLikedTopics()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
             user.SetAsActive();
@@ -49,7 +50,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void ShouldNot_SetupInitialSettings_WhenIsNotActivated()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
 
@@ -67,7 +68,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void ShouldNot_SetupInitialSettings_WhenIsAlreadyConfigured()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
             user.SetAsActive();
@@ -87,7 +88,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void ShouldNot_SetupInitialSettings_WithoutName()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
             user.SetAsActive();
@@ -106,7 +107,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void Should_SetupInitialSettings_Successfully()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
             user.SetAsActive();
@@ -129,7 +130,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void ShouldNot_EditLikedTopics_WhenUserNotExists()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var likedTopics = new List<Topic>
             {
@@ -143,7 +144,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void ShouldNot_EditLikedTopics_WhenUserIsInvalid()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
             user.SetAsActive();
@@ -162,7 +163,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void ShouldNot_EditLikedTopics_WhenTopicsIsEmpty()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
             user.SetAsActive();
@@ -179,7 +180,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void ShouldNot_EditLikedTopics_WhenTopicsIsNull()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
             user.SetAsActive();
@@ -194,7 +195,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void Should_EditLikedTopics_ChangeTopics()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
 
@@ -230,7 +231,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void ShouldNot_GetProfile_WhenUserNotExists()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
             user.SetAsActive();
@@ -245,7 +246,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void ShouldNot_GetProfile_WhenUserIsInvalid()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
             user.SetAsActive();
@@ -259,7 +260,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void Should_GetProfile_ReturnsProfile()
         {
             var repository = new UserRepositoryMock();
-            var userService = new UserService(repository);
+            var userService = new UserService(repository, MapperFactory.Create());
 
             var user = new User("username", "user@email.com");
             user.SetAsActive();
@@ -270,6 +271,73 @@ namespace AuroraCore.UnitTests.Application.Services
             UserProfile userProfile = userService.GetProfile(user.Id);
 
             Assert.True(userProfile != null);
+        }
+
+        /**
+         * EditProfile 
+         */
+
+        [Fact]
+        public void ShouldNot_EditProfile_ChangeEmail()
+        {
+            var repository = new UserRepositoryMock();
+            var userService = new UserService(repository, MapperFactory.Create());
+
+            var user = new User("username", "user@email.com");
+            user.SetAsActive();
+            user.SetAsConfigured();
+
+            repository.Store(user);
+
+            var userProfile = new UserProfile(user)
+            {
+                Email = "user2@email.com"
+            };
+
+            userService.GetProfile(user.Id);
+
+            User updatedUser = repository.FindByID(user.Id);
+
+            Assert.True(updatedUser.Email == user.Email);
+        }
+
+
+        [Fact]
+        public void ShouldNot_EditProfile_WhenUserNotExists()
+        {
+            var repository = new UserRepositoryMock();
+            var userService = new UserService(repository, MapperFactory.Create());
+
+            var userProfile = new UserProfile
+            {
+                Id = Guid.NewGuid()
+            };
+
+            Assert.Throws<ValidationException>(() => userService.EditProfile(userProfile));
+        }
+
+        [Fact]
+        public void Should_EditProfile_Successfully()
+        {
+            var repository = new UserRepositoryMock();
+            var userService = new UserService(repository, MapperFactory.Create());
+
+            var user = new User("username", "user@email.com");
+            user.SetAsActive();
+            user.SetAsConfigured();
+
+            repository.Store(user);
+
+            var userProfile = new UserProfile(user)
+            {
+                Username = "username2"
+            };
+
+            userService.EditProfile(userProfile);
+
+            User updatedUser = repository.FindByID(user.Id);
+
+            Assert.True(updatedUser.Username == userProfile.Username);
         }
     }
 }
