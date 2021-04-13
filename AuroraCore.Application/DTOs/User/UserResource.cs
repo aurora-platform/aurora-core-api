@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AuroraCore.Application.DTOs
 {
-    public class UserProfile
+    public class UserResource
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -14,19 +14,5 @@ namespace AuroraCore.Application.DTOs
         public string ImageURL { get; set; }
         public string AboutMe { get; set; }
         public IEnumerable<Topic> LikedTopics { get; set; }
-
-        public UserProfile() { }
-
-        public UserProfile(User user)
-        {
-            Id = user.Id;
-            Name = user.Name;
-            Username = user.Username;
-            Email = user.Email;
-            Phone = user.Phone;
-            ImageURL = user.ImageURL;
-            AboutMe = user.AboutMe;
-            LikedTopics = user.LikedTopics;
-        }
     }
 }

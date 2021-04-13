@@ -17,26 +17,18 @@ namespace AuroraCore.Application.Services
         private static void Validate(string plainTextPassword)
         {
             if (plainTextPassword.Length < 6)
-            {
-                throw new ValidationException("Password must be at least 6 characters");
-            }
+                throw new InvalidPasswordException("Password must be at least 6 characters");
 
             if (!plainTextPassword.Any(char.IsUpper))
-            {
-                throw new ValidationException("Password must have at least 1 upper case letter");
-            }
+                throw new InvalidPasswordException("Password must have at least 1 upper case letter");
 
             if (!plainTextPassword.Any(char.IsNumber))
-            {
-                throw new ValidationException("Password must have at least 1 number");
-            }
+                throw new InvalidPasswordException("Password must have at least 1 number");
 
             var regex = new Regex("[^a-zA-Z0-9]");
 
             if (!regex.IsMatch(plainTextPassword))
-            {
-                throw new ValidationException("Password must have at least 1 special character");
-            }
+                throw new InvalidPasswordException("Password must have at least 1 special character");
         }
 
         public string Protect(string plainTextPassword)
@@ -47,7 +39,13 @@ namespace AuroraCore.Application.Services
 
         public void Verify(string password, string hash)
         {
-           _hashProvider.Verify(password, hash);
+           if (!_hashProvider.IsEqual(password, hash))
+                throw new InvalidPasswordException("Invalid password");
+        }
+
+        public class InvalidPasswordException : ValidationException
+        {
+            public InvalidPasswordException(string message): base(message) { }
         }
     }
 }

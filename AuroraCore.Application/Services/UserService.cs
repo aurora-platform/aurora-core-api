@@ -21,44 +21,52 @@ namespace AuroraCore.Application.Services
             _passwordService = new PasswordService(hashProvider);
         }
 
-        private static void ValidateUser(User user)
+        private void CheckIfUserExists(string username, string email)
         {
-            if (user == null)
-            {
-                throw new ValidationException("User not exists");
-            }
+            User existingUser = _userRepository.FindByUsernameOrEmail(username, email);
 
-            if (!user.IsValid())
+            if (existingUser != null)
             {
-                throw new ValidationException("Invalid user");
+                if (existingUser.Email == email)
+                    throw new ValidationException("A user already exists with this email");
+
+                if (existingUser.Username == username)
+                    throw new ValidationException("This username already taken");
             }
         }
 
-        public void SetupInitialSettings(Guid id, string name, IEnumerable<Topic> likedTopics)
+        public UserResource Create(string username, string email, string password)
         {
-            User user = _userRepository.FindByID(id);
+            CheckIfUserExists(username, email);
+
+            var user = new User(username, email, "User");
+
+            if (string.IsNullOrWhiteSpace(password))
+                throw new ValidationException("Password is required");
+
+            var protectedPassword = _passwordService.Protect(password);
+
+            user.SetPassword(protectedPassword);
+            user.SetAsActive();
+
+            _userRepository.Store(user);
+
+            return _mapper.Map<UserResource>(user);
+        }
+
+        public void SetupInitialSettings(Guid userId, string name, IEnumerable<Topic> likedTopics)
+        {
+            User user = _userRepository.FindByID(userId);
 
             bool hasLikedTopics = likedTopics != null && likedTopics.Any();
 
-            if (user == null)
-            {
-                throw new ValidationException("The user not exists");
-            }
+            if (user == null) throw new ValidationException("The user not exists");
 
-            if (!hasLikedTopics)
-            {
-                throw new ValidationException("Must be selected at least 1 topic");
-            }
+            if (!hasLikedTopics) throw new ValidationException("Must be selected at least 1 topic");
 
-            if (!user.IsActivated)
-            {
-                throw new ValidationException("User is not activated");
-            }
+            if (!user.IsActivated) throw new ValidationException("User is not activated");
 
-            if (user.IsConfigured)
-            {
-                throw new ValidationException("User is already configured");
-            }
+            if (user.IsConfigured) throw new ValidationException("User is already configured");
 
             user.SetName(name);
             user.SetLikedTopics(likedTopics);
@@ -67,35 +75,40 @@ namespace AuroraCore.Application.Services
             _userRepository.Update(user);
         }
 
-        public UserProfile GetProfile(Guid id)
+        public UserResource Get(Guid userId)
         {
-            User user = _userRepository.FindByID(id);
-            ValidateUser(user);
+            User user = _userRepository.FindByID(userId);
 
-            return new UserProfile(user);
+            if (user == null) throw new ValidationException("The user not exists");
+
+            return _mapper.Map<UserResource>(user);
         }
 
-        public void EditProfile(UserProfile userProfile)
+        public void Edit(Guid userId, UserEditionParams editionParams)
         {
-            User user = _userRepository.FindByID(userProfile.Id);
-            ValidateUser(user);
+            User findedUser = _userRepository.FindByID(userId);
 
-            userProfile.Email = user.Email;
+            if (findedUser == null) throw new ValidationException("The user not exists");
 
-            User mappedUser = _mapper.Map(userProfile, user);
+            findedUser.SetName(editionParams.Name);
+            findedUser.SetUsername(editionParams.Username);
+            findedUser.SetPhone(editionParams.Phone);
+            findedUser.SetAboutMe(editionParams.AboutMe);
+            findedUser.Validate();
 
-            _userRepository.Update(mappedUser);
+            _userRepository.Update(findedUser);
         }
 
         public void EditLikedTopics(Guid userId, IEnumerable<Topic> likedTopics)
         {
             User user = _userRepository.FindByID(userId);
-            ValidateUser(user);
 
-            if (!user.HasLikedTopics())
-            {
+            if (user == null) throw new ValidationException("The user not exists");
+
+            user.Validate();
+
+            if (likedTopics == null || !likedTopics.Any())
                 throw new ValidationException("Must be selected at least 1 topic");
-            }
 
             _userRepository.UpdateLikedTopics(user.Id, likedTopics);
         }
@@ -103,19 +116,18 @@ namespace AuroraCore.Application.Services
         public void ChangePassword(Guid userId, string currentPassword, string newPassword, string confirmNewPassword)
         {
             User user = _userRepository.FindByID(userId);
-            ValidateUser(user);
+
+            if (user == null) throw new ValidationException("The user not exists");
+
+            user.Validate();
 
             _passwordService.Verify(currentPassword, user.Password);
 
             if (currentPassword == newPassword)
-            {
                 throw new ValidationException("The new password and current are the same");
-            }
 
             if (newPassword != confirmNewPassword)
-            {
                 throw new ValidationException("The new password and confirmation are not the same");
-            }
 
             string protectedNewPassword = _passwordService.Protect(newPassword);
 

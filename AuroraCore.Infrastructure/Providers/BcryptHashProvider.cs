@@ -11,14 +11,9 @@ namespace AuroraCore.Infrastructure.Providers
             return Bcrypt.HashPassword(password);
         }
 
-        public void Verify(string password, string hash)
+        public bool IsEqual(string password, string hash)
         {
-            bool isValid = Bcrypt.Verify(password, hash);
-
-            if (!isValid)
-            {
-                throw new Exception("Invalid password");
-            }
+            return Bcrypt.Verify(password, hash);
         }
     }
 }

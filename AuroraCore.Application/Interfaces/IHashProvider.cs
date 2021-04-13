@@ -2,7 +2,7 @@
 {
     public interface IHashProvider
     {
-        void Verify(string password, string hash);
+        bool IsEqual(string password, string hash);
 
         string HashPassword(string password);
     }

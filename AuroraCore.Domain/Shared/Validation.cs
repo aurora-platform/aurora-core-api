@@ -1,4 +1,6 @@
-﻿namespace AuroraCore.Domain.Shared
+﻿using AuroraCore.Domain.Model;
+
+namespace AuroraCore.Domain.Shared
 {
     public class Validation
     {

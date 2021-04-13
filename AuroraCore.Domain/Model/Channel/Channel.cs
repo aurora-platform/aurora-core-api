@@ -1,38 +1,56 @@
 ﻿using AuroraCore.Domain.Shared;
 using System;
-using System.Collections.Generic;
 
 namespace AuroraCore.Domain.Model
 {
     public class Channel
     {
-        public Channel(string name, string description)
-        {
-            Validation.NotNullOrWhiteSpace(name, "Name is required");
-            Validation.NotNullOrWhiteSpace(description, "Description is required");
+        public Guid Id { get; private set; }
+        public string Name { get; private set; }
+        public string About { get; private set; }
+        public User Owner { get; private set; }
+        public ImageReference Image { get; private set; }
 
-            Id = new Guid();
+        public Channel() { }
+
+        public Channel(User owner, string name, string about = null, ImageReference image = null)
+        {
+            if (owner == null) throw new ValidationException("The owner not exists");
+
+            owner.Validate();
+
+            Validation.NotNullOrWhiteSpace(name, "Name is required");
+
+            Id = Guid.NewGuid();
+            Owner = owner;
             Name = name;
-            Description = description;
+            Image = image;
+            About = about;
         }
 
-        public Guid Id { get; }
-
-        public string Name { get; }
-
-        public string Description { get; }
-
-        public string ImageURL { get; }
-
-        public IEnumerable<Minidoc> Minidocs { get; }
-
-        public IEnumerable<Serie> Series { get; }
-
-        public IEnumerable<Topic> Topics { get; private set; }
-
-        public void SetTopics(IEnumerable<Topic> topics)
+        public void SetImage(ImageReference image)
         {
-            Topics = topics;
+            Image = image;
+        }
+
+        public void ChangeImage(ImageReference image)
+        {
+            Image.ChangeReference(image);
+        }
+
+        public void SetName(string name)
+        {
+            Name = name;
+        }
+
+        public void SetAbout(string about)
+        {
+            About = about;
+        }
+
+        public void SetOwner(User owner)
+        {
+            Owner = owner;
         }
     }
 }

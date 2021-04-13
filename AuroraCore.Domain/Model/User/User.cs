@@ -14,7 +14,7 @@ namespace AuroraCore.Domain.Model
         public string Password { get; private set; }
         public string Email { get; private set; }
         public string Phone { get; private set; }
-        public string ImageURL { get; private set; }
+        public ImageReference Image { get; private set; }
         public string AboutMe { get; private set; }
         public bool IsActivated { get; private set; }
         public bool IsConfigured { get; private set; }
@@ -22,35 +22,62 @@ namespace AuroraCore.Domain.Model
 
         public User() { }
 
-        public User(string username, string email)
+        public User(string username, string email, string name)
+        {
+            Validation.NotNullOrWhiteSpace(username, "Username is required");
+            Validation.NotNullOrWhiteSpace(email, "Email is required");
+            Validation.NotNullOrWhiteSpace(name, "Name is required");
+
+            if (!Regex.IsMatch(email, @"\S+@\S+\.\S+"))
+                throw new ValidationException("Invalid email");
+
+            Id = Guid.NewGuid();
+            Username = username;
+            Email = email;
+            Name = name;
+        }
+
+        public User(
+            string name,
+            string username,
+            string password,
+            string email,
+            string phone,
+            ImageReference image,
+            string about,
+            bool isActivated,
+            bool isConfigured,
+            IEnumerable<Topic> likedTopics
+        )
         {
             Validation.NotNullOrWhiteSpace(username, "Username is required");
             Validation.NotNullOrWhiteSpace(email, "Email is required");
 
             if (!Regex.IsMatch(email, @"\S+@\S+\.\S+"))
-            {
                 throw new ValidationException("Invalid email");
-            }
 
             Id = Guid.NewGuid();
+            Name = name;
             Username = username;
+            Password = password;
+            Phone = phone;
             Email = email;
+            Image = image;
+            AboutMe = about;
+            IsActivated = isActivated;
+            IsConfigured = isConfigured;
+            LikedTopics = likedTopics;
         }
 
-        public bool HasLikedTopics()
-        {
-            return LikedTopics != null && LikedTopics.Any();
-        }
+        public bool HasLikedTopics() => LikedTopics != null && LikedTopics.Any();
 
-        public void SetAsConfigured()
-        {
-            IsConfigured = true;
-        }
+        public void SetAsConfigured() => IsConfigured = true;
 
-        public void SetAsActive()
-        {
-            IsActivated = true;
-        }
+        public void SetAsActive() =>  IsActivated = true;
+
+        public void SetLikedTopics(IEnumerable<Topic> topics) => LikedTopics = topics;
+
+        public void SetPassword(string hashedPassword) => Password = hashedPassword;
 
         public void SetEmail(string email)
         {
@@ -64,19 +91,28 @@ namespace AuroraCore.Domain.Model
             Name = name;
         }
 
-        public void SetLikedTopics(IEnumerable<Topic> topics)
+        public void SetUsername(string username)
         {
-            LikedTopics = topics;
+            Validation.NotNullOrWhiteSpace(username, "Username is required");
+            Username = username;
         }
 
-        public void SetPassword(string hashedPassword)
+        public void SetPhone(string phone)
         {
-            Password = hashedPassword;
+            Phone = phone;
         }
 
-        public bool IsValid()
+        public void SetAboutMe(string about)
         {
-            return IsConfigured && IsActivated;
+            AboutMe = about;
+        }
+
+        public void Validate()
+        {
+            if (!IsConfigured || !IsActivated)
+            {
+                throw new ValidationException("Invalid user");
+            }
         }
     }
 }
