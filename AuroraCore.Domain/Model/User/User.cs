@@ -114,5 +114,34 @@ namespace AuroraCore.Domain.Model
                 throw new ValidationException("Invalid user");
             }
         }
+
+        public bool IsValid()
+        {
+            return IsConfigured && IsActivated;
+        }
+
+        public static bool operator ==(User obj1, User obj2)
+        {
+            if (obj1 is null)
+                return obj2 is null;
+
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(User obj1, User obj2)
+        {
+            if (obj1 is null)
+                return false;
+
+            return !obj1.Equals(obj2);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is null) return false;
+
+            var user = (User)obj;
+            return user.Id == Id;
+        }
     }
 }

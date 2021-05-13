@@ -28,10 +28,5 @@ namespace AuroraCore.Domain.Model
             Uri = newReference.Uri;
             ExternalId = newReference.ExternalId;
         }
-
-        public Uri GetUri()
-        {
-            return new Uri(Uri);
-        }
     }
 }

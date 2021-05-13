@@ -15,11 +15,11 @@ namespace AuroraCore.Domain.Model
 
         public Channel(User owner, string name, string about = null, ImageReference image = null)
         {
-            if (owner == null) throw new ValidationException("The owner not exists");
-
-            owner.Validate();
-
+            Validation.NotNull(owner, "Owner is required");
             Validation.NotNullOrWhiteSpace(name, "Name is required");
+
+            if (!owner.IsValid())
+                throw new ValidationException("Owner is not valid");
 
             Id = Guid.NewGuid();
             Owner = owner;
@@ -51,6 +51,16 @@ namespace AuroraCore.Domain.Model
         public void SetOwner(User owner)
         {
             Owner = owner;
+        }
+
+        public bool HasOwner(User owner)
+        {
+            Validation.NotNull(owner, "Owner is required");
+
+            if (!owner.IsValid())
+                throw new ValidationException("The owner is invalid");
+
+            return Owner == owner;
         }
     }
 }

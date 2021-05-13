@@ -2,7 +2,6 @@
 using aurora_core_api.Responses;
 using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
-using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
 using AuroraCore.Infrastructure.Providers;
 using Microsoft.AspNetCore.Mvc;
@@ -31,7 +30,7 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                User authenticatedUser = _authenticationService.AuthenticateWithPassword(request.Username, request.Password);
+                UserResource authenticatedUser = _authenticationService.AuthenticateWithPassword(request.Username, request.Password);
                 Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(authenticatedUser.Id);
 
                 return Ok(new AuthTokens(tokens.Item1, tokens.Item2));

@@ -18,7 +18,7 @@ namespace AuroraCore.Application.Services
             IChannelRepository channelRepository,
             IUserRepository userRepository,
             IImageStorageService imageStorageService,
-            IObjectMapper mapper
+            IObjectMapper mapper 
         )
         {
             _channelRepository = channelRepository;
@@ -27,65 +27,74 @@ namespace AuroraCore.Application.Services
             _mapper = mapper;
         }
 
-        public void Create(Guid ownerId, ChannelCreationParams creationParams)
+        public ChannelResource Create(Guid ownerId, ChannelCreationParams creationParams)
         {
-            User user = _userRepository.FindByID(ownerId);
+            User owner = _userRepository.FindByID(ownerId);
+            var channel = new Channel(owner, creationParams.Name, creationParams.About);
 
-            if (user == null) throw new ValidationException("The user not exists");
-
-            user.Validate();
-
-            var channel = new Channel(user, creationParams.Name, creationParams.About);
-
-            ImageReference imageReference = _imageStorageService.Store("teste", creationParams.ImageBase64);
-
-            channel.SetImage(imageReference);
+            if (!string.IsNullOrEmpty(creationParams.ImageBase64))
+            {
+                ImageReference imageReference = _imageStorageService.Store("test", creationParams.ImageBase64);
+                channel.SetImage(imageReference);
+            }
 
             _channelRepository.Store(channel);
+            
+            return _mapper.Map<ChannelResource>(channel);
         }
 
-        public void Edit(ChannelEditionParams channel)
+        public void Edit(Guid ownerId, ChannelEditionParams editionParams)
         {
-            Channel findedChannel = _channelRepository.FindByID(channel.Id);
+            User owner = _userRepository.FindByID(ownerId);
+            Channel channel = _channelRepository.FindByID(editionParams.Id);
 
-            if (findedChannel == null) throw new ValidationException("The specified channel was not found");
+            if (channel is null)
+                throw new ValidationException("The specified channel was not found");
 
-            findedChannel.SetName(channel.Name);
-            findedChannel.SetAbout(channel.About);
+            if (!channel.HasOwner(owner))
+                throw new ValidationException("This user is not the owner of this channel");
 
-            _channelRepository.Update(findedChannel);
+            channel.SetName(editionParams.Name);
+            channel.SetAbout(editionParams.About);
+            
+            _channelRepository.Update(channel);
         }
 
         public ChannelResource GetOne(Guid channelId)
         {
             Channel channel = _channelRepository.FindByID(channelId);
-
             return _mapper.Map<ChannelResource>(channel);
         }
 
         public IEnumerable<ChannelResource> GetAllOwnedBy(Guid ownerId)
         {
             IEnumerable<Channel> channels = _channelRepository.FindAllByOwnerId(ownerId);
-
             return _mapper.Map<IEnumerable<ChannelResource>>(channels);
         }
 
         public void Delete(Guid id)
         {
-            _channelRepository.Delete(id);
+            _channelRepository.Delete(id);  
         }
 
-        public void ChangeImage(Guid channelId, string imageBase64)
+        public void ChangeImage(Guid ownerId, Guid channelId, string imageBase64)
         {
+            User owner = _userRepository.FindByID(ownerId);
             Channel channel = _channelRepository.FindByID(channelId);
 
-            if (channel == null) throw new ValidationException("The specified channel was not found");
+            if (channel == null)
+                throw new ValidationException("The specified channel was not found");
+
+            if (!channel.HasOwner(owner))
+                throw new ValidationException("This user is not the owner of this channel");
+
+            if (string.IsNullOrWhiteSpace(imageBase64))
+                throw new ValidationException("The image is required");
 
             _imageStorageService.Delete(channel.Image);
             ImageReference newImage = _imageStorageService.Store("test", imageBase64);
 
             channel.ChangeImage(newImage);
-
             _channelRepository.Update(channel);
         }
     }

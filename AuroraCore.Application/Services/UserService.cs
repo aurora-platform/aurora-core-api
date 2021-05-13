@@ -21,7 +21,7 @@ namespace AuroraCore.Application.Services
             _passwordService = new PasswordService(hashProvider);
         }
 
-        private void CheckIfUserExists(string username, string email)
+        public UserResource Create(string username, string email, string password)
         {
             User existingUser = _userRepository.FindByUsernameOrEmail(username, email);
 
@@ -33,11 +33,6 @@ namespace AuroraCore.Application.Services
                 if (existingUser.Username == username)
                     throw new ValidationException("This username already taken");
             }
-        }
-
-        public UserResource Create(string username, string email, string password)
-        {
-            CheckIfUserExists(username, email);
 
             var user = new User(username, email, "User");
 
@@ -80,6 +75,8 @@ namespace AuroraCore.Application.Services
             User user = _userRepository.FindByID(userId);
 
             if (user == null) throw new ValidationException("The user not exists");
+
+            user.Validate();
 
             return _mapper.Map<UserResource>(user);
         }

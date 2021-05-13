@@ -42,7 +42,7 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                _channelService.Edit(channel);
+                _channelService.Edit(GetCurrentUser().Id, channel);
                 return Ok("Channel edited successfully");
             }
             catch (ValidationException ex)
@@ -87,7 +87,7 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                _channelService.ChangeImage(id, imageBase64);
+                _channelService.ChangeImage(GetCurrentUser().Id, id, imageBase64);
                 return Ok("Image changed successfully");
             }
             catch (ValidationException ex)

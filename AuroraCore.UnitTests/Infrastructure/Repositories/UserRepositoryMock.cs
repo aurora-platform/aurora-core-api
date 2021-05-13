@@ -46,8 +46,8 @@ namespace AuroraCore.UnitTests.Infrastructure.Repositories
 
         public void Update(User entity)
         {
-            User foundedUser = users.FirstOrDefault(user => user.Id == entity.Id);
-            if (foundedUser != null) foundedUser = entity;
+            User foundUser = users.FirstOrDefault(user => user.Id == entity.Id);
+            if (foundUser != null) foundUser = entity;
         }
 
         public void UpdateLikedTopics(Guid userId, IEnumerable<Topic> likedTopics)

@@ -16,7 +16,8 @@ namespace aurora_core_api.Utils
 
             services.AddSingleton<IAuthenticationService>(new AuthenticationService(
                 new UserRepository(),
-                new BcryptHashProvider()
+                new BcryptHashProvider(),
+                mapper
             ));
             services.AddSingleton<ITopicService>(new TopicService(
                 new TopicRepository()

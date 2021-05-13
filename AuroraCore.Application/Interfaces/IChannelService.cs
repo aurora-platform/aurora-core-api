@@ -6,11 +6,11 @@ namespace AuroraCore.Application.Interfaces
 {
     public interface IChannelService
     {
-        void Create(Guid ownerId, ChannelCreationParams channelCreation);
+        ChannelResource Create(Guid ownerId, ChannelCreationParams channelCreation);
 
-        void Edit(ChannelEditionParams channel);
+        void Edit(Guid ownerId, ChannelEditionParams channelEdition);
 
-        void ChangeImage(Guid channelId, string imageBase64);
+        void ChangeImage(Guid ownerId, Guid channelId, string imageBase64);
 
         void Delete(Guid ownerId);
 

@@ -1,5 +1,4 @@
 ﻿using AuroraCore.Application.DTOs;
-using AuroraCore.Application.Interfaces;
 using AuroraCore.Application.Services;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
@@ -29,6 +28,7 @@ namespace AuroraCore.UnitTests.Application.Services
         public void Dispose()
         {
             _userService = null;
+            _authenticationService = null;
         }
 
         /**
