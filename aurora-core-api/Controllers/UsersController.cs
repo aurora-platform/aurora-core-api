@@ -6,7 +6,6 @@ using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 
 namespace aurora_core_api.Controllers
@@ -28,8 +27,7 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                _userService.SetupInitialSettings(Guid.NewGuid(), settings.Name, settings.LikedTopics);
-
+                _userService.SetupInitialSettings(GetCurrentUser().Id, settings.Name, settings.LikedTopics);
                 return Ok("Configured successfully");
             }
             catch (ValidationException ex)
@@ -44,8 +42,7 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                _userService.EditLikedTopics(Guid.NewGuid(), likedTopics);
-
+                _userService.EditLikedTopics(GetCurrentUser().Id, likedTopics);
                 return Ok("Edited successfully");
             }
             catch (ValidationException ex)
@@ -56,28 +53,26 @@ namespace aurora_core_api.Controllers
 
         [HttpGet]
         [Route("me")]
-        public Response<UserProfile> GetCurrentUserProfile()
+        public Response<UserResource> GetCurrentUserProfile()
         {
             try
             {
-                UserProfile userProfile = _userService.GetProfile(Guid.NewGuid());
-                
+                UserResource userProfile = _userService.Get(GetCurrentUser().Id);
                 return Ok(userProfile);
             }
             catch (ValidationException ex)
             {
-                return BadRequest<UserProfile>(ex.Message);
+                return BadRequest<UserResource>(ex.Message);
             }
         }
 
         [HttpPut]
         [Route("me")]
-        public Response<object> EditCurrentUserProfile([FromBody] UserProfile userProfile)
+        public Response<object> EditCurrentUserProfile([FromBody] UserEditionParams editionParams)
         {
             try
             {
-                _userService.EditProfile(userProfile);
-
+                _userService.Edit(GetCurrentUser().Id, editionParams);
                 return Ok("Profile edited successfully");
             }
             catch (ValidationException ex)
@@ -94,7 +89,6 @@ namespace aurora_core_api.Controllers
             try
             {
                 _userService.ChangePassword(GetCurrentUser().Id, request.Current, request.New, request.Confirmation);
-
                 return Ok("Password changed successfully");
             }
             catch (ValidationException ex)

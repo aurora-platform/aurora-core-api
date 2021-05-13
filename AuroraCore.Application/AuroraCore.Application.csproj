@@ -5,12 +5,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\AuroraCore.Domain\AuroraCore.Domain.csproj" />
+    <Compile Remove="Dependencies\**" />
+    <Compile Remove="Providers\**" />
+    <EmbeddedResource Remove="Dependencies\**" />
+    <EmbeddedResource Remove="Providers\**" />
+    <None Remove="Dependencies\**" />
+    <None Remove="Providers\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Dependencies\" />
-    <Folder Include="Providers\" />
+    <ProjectReference Include="..\AuroraCore.Domain\AuroraCore.Domain.csproj" />
   </ItemGroup>
 
 </Project>

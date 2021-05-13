@@ -7,14 +7,16 @@ namespace AuroraCore.Application.Interfaces
 {
     public interface IUserService
     {
-        void SetupInitialSettings(Guid id, string name, IEnumerable<Topic> likedTopics);
+        UserResource Create(string username, string email, string password);
 
-        void EditLikedTopics(Guid id, IEnumerable<Topic> likedTopics);
+        void Edit(Guid userId, UserEditionParams editionParams);
 
-        UserProfile GetProfile(Guid id);
+        void SetupInitialSettings(Guid userId, string name, IEnumerable<Topic> likedTopics);
 
-        void EditProfile(UserProfile userProfile);
+        void EditLikedTopics(Guid userId, IEnumerable<Topic> likedTopics);
 
-        void ChangePassword(Guid id, string currentPassword, string newPassword, string confirmNewPassword);
+        UserResource Get(Guid userId);
+
+        void ChangePassword(Guid userId, string currentPassword, string newPassword, string confirmNewPassword);
     }
 }

@@ -9,9 +9,13 @@ namespace AuroraCore.Infrastructure.Factories
     {
         public static IObjectMapper Create()
         {
-            var configuration = new AutoMapper.MapperConfiguration(cfg =>
+            var configuration = new AutoMapper.MapperConfiguration(config =>
             {
-                cfg.CreateMap<UserProfile, User>();
+                config.CreateMap<User, UserResource>();
+                config.CreateMap<User, UserCompact>();
+
+                config.CreateMap<Channel, ChannelResource>();
+                config.CreateMap<ImageReference, ImageCompact>();
             });
 
             return new ObjectMapper(configuration.CreateMapper());

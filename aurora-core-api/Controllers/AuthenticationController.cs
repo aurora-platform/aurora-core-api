@@ -2,12 +2,11 @@
 using aurora_core_api.Responses;
 using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
-using AuroraCore.Domain.Model;
+using AuroraCore.Domain.Shared;
 using AuroraCore.Infrastructure.Providers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 
 namespace aurora_core_api.Controllers
 {
@@ -31,7 +30,7 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                User authenticatedUser = _authenticationService.AuthenticateWithPassword(request.Username, request.Password);
+                UserResource authenticatedUser = _authenticationService.AuthenticateWithPassword(request.Username, request.Password);
                 Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(authenticatedUser.Id);
 
                 return Ok(new AuthTokens(tokens.Item1, tokens.Item2));
@@ -49,15 +48,13 @@ namespace aurora_core_api.Controllers
             try
             {
                 if (!_jwtTokenProvider.IsValid(refreshToken))
-                {
                     throw new ValidationException("Invalid token");
-                }
 
                 IDictionary<string, object> claims = _jwtTokenProvider.Decode(refreshToken);
 
-                UserProfile userProfile = _userService.GetProfile(new Guid((string)claims["sub"]));
+                UserResource user = _userService.Get(new Guid((string)claims["sub"]));
 
-                Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(userProfile.Id);
+                Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(user.Id);
 
                 return Ok(new AuthTokens(tokens.Item1, tokens.Item2));
             }
@@ -73,7 +70,7 @@ namespace aurora_core_api.Controllers
         {
             try
             {
-                User createdUser = _authenticationService.SignUp(request.Username, request.Email, request.Password);
+                UserResource createdUser = _userService.Create(request.Username, request.Email, request.Password);
                 Tuple<string, string> tokens = _jwtTokenProvider.CreateTokens(createdUser.Id);
 
                 return Created(new AuthTokens(tokens.Item1, tokens.Item2));
