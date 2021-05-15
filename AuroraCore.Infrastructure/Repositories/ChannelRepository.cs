@@ -42,7 +42,7 @@ namespace AuroraCore.Infrastructure.Repositories
            );
         }
 
-        public Channel FindByID(Guid id)
+        public Channel FindById(Guid id)
         {
             using var connection = ConnectionFactory.GetConnection();
 

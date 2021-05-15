@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace AuroraCore.Domain.Model
 {
-    public interface ISerieRepository : IRepository<Serie>
+    public interface ISerieRepository
     {
         IEnumerable<Serie> FindByTopics(IEnumerable<Topic> topics);
 

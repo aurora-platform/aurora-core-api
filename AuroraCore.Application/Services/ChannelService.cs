@@ -29,7 +29,7 @@ namespace AuroraCore.Application.Services
 
         public ChannelResource Create(Guid ownerId, ChannelCreationParams creationParams)
         {
-            User owner = _userRepository.FindByID(ownerId);
+            User owner = _userRepository.FindById(ownerId);
             var channel = new Channel(owner, creationParams.Name, creationParams.About);
 
             if (!string.IsNullOrEmpty(creationParams.ImageBase64))
@@ -45,8 +45,8 @@ namespace AuroraCore.Application.Services
 
         public void Edit(Guid ownerId, ChannelEditionParams editionParams)
         {
-            User owner = _userRepository.FindByID(ownerId);
-            Channel channel = _channelRepository.FindByID(editionParams.Id);
+            User owner = _userRepository.FindById(ownerId);
+            Channel channel = _channelRepository.FindById(editionParams.Id);
 
             if (channel is null)
                 throw new ValidationException("The specified channel was not found");
@@ -62,7 +62,7 @@ namespace AuroraCore.Application.Services
 
         public ChannelResource GetOne(Guid channelId)
         {
-            Channel channel = _channelRepository.FindByID(channelId);
+            Channel channel = _channelRepository.FindById(channelId);
             return _mapper.Map<ChannelResource>(channel);
         }
 
@@ -79,8 +79,8 @@ namespace AuroraCore.Application.Services
 
         public void ChangeImage(Guid ownerId, Guid channelId, string imageBase64)
         {
-            User owner = _userRepository.FindByID(ownerId);
-            Channel channel = _channelRepository.FindByID(channelId);
+            User owner = _userRepository.FindById(ownerId);
+            Channel channel = _channelRepository.FindById(channelId);
 
             if (channel == null)
                 throw new ValidationException("The specified channel was not found");

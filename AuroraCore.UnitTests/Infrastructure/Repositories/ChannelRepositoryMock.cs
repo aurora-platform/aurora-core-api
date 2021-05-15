@@ -26,7 +26,7 @@ namespace AuroraCore.UnitTests.Infrastructure.Repositories
             return channels.Where(channel => channel.Owner.Id == ownerId);
         }
 
-        public Channel FindByID(Guid id)
+        public Channel FindById(Guid id)
         {
             return channels.FirstOrDefault(channel => channel.Id == id);
         }

@@ -10,42 +10,33 @@ namespace AuroraCore.Application.Services
   {
     private readonly IUserRepository _userRepository;
     private readonly IChannelRepository _channelRepository;
+    private readonly ITopicRepository _topicRepository;
     private readonly IMinidocRepository _minidocRepository;
+    private readonly IObjectMapper _mapper;
 
-    public MinidocService(IChannelRepository channelRepository, IMinidocRepository minidocRepository, IUserRepository userRepository)
+    public MinidocService(
+      IChannelRepository channelRepository,
+      ITopicRepository topicRepository,
+      IMinidocRepository minidocRepository,
+      IUserRepository userRepository,
+      IObjectMapper mapper
+    )
     {
         _channelRepository = channelRepository;
+        _topicRepository = topicRepository;
         _minidocRepository = minidocRepository;
         _userRepository = userRepository;
+        _mapper = mapper;
     }
 
     public void Create(Guid ownerId, MinidocCreationParams creationParams)
     {
-      var owner = _userRepository.FindByID(ownerId);
-      var channel = _channelRepository.FindByID(creationParams.ChannelId);
+      var owner = _userRepository.FindById(ownerId);
+      var channel = _channelRepository.FindById(creationParams.ChannelId);
 
-      // var minidoc = new Minidoc(creationParams.Title, creationParams.Description);
+      var minidoc = new Minidoc(creationParams.Title, creationParams.Description, channel);
 
-    }
-
-    public void Delete(Guid ownerId, MinidocCreationParams creationParams)
-    {
-      throw new NotImplementedException();
-    }
-
-    public void Edit(Guid ownerId, MinidocCreationParams creationParams)
-    {
-      throw new NotImplementedException();
-    }
-
-    public IEnumerable<MinidocResource> GetByChannelId(Guid channelId)
-    {
-      throw new NotImplementedException();
-    }
-
-    public MinidocResource GetById(Guid minidocId)
-    {
-      throw new NotImplementedException();
+      _minidocRepository.Store(minidoc);
     }
   }
 }

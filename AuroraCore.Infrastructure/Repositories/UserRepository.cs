@@ -16,7 +16,7 @@ namespace AuroraCore.Infrastructure.Repositories
             return connection.Execute("DELETE FROM users WHERE id = @id", new { id });
         }
 
-        public User FindByID(Guid id)
+        public User FindById(Guid id)
         {
             using var connection = ConnectionFactory.GetConnection();
             User user = connection.QuerySingleOrDefault<User>("SELECT * FROM users WHERE id = @id", new { id });

@@ -19,7 +19,7 @@ namespace AuroraCore.UnitTests.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        public User FindByID(Guid id)
+        public User FindById(Guid id)
         {
             return users.FirstOrDefault(user => user.Id == id);
         }

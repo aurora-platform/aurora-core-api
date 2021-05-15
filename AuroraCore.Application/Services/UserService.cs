@@ -51,7 +51,7 @@ namespace AuroraCore.Application.Services
 
         public void SetupInitialSettings(Guid userId, string name, IEnumerable<Topic> likedTopics)
         {
-            User user = _userRepository.FindByID(userId);
+            User user = _userRepository.FindById(userId);
 
             bool hasLikedTopics = likedTopics != null && likedTopics.Any();
 
@@ -72,7 +72,7 @@ namespace AuroraCore.Application.Services
 
         public UserResource Get(Guid userId)
         {
-            User user = _userRepository.FindByID(userId);
+            User user = _userRepository.FindById(userId);
 
             if (user == null) throw new ValidationException("The user not exists");
 
@@ -83,7 +83,7 @@ namespace AuroraCore.Application.Services
 
         public void Edit(Guid userId, UserEditionParams editionParams)
         {
-            User findedUser = _userRepository.FindByID(userId);
+            User findedUser = _userRepository.FindById(userId);
 
             if (findedUser == null) throw new ValidationException("The user not exists");
 
@@ -98,7 +98,7 @@ namespace AuroraCore.Application.Services
 
         public void EditLikedTopics(Guid userId, IEnumerable<Topic> likedTopics)
         {
-            User user = _userRepository.FindByID(userId);
+            User user = _userRepository.FindById(userId);
 
             if (user == null) throw new ValidationException("The user not exists");
 
@@ -112,7 +112,7 @@ namespace AuroraCore.Application.Services
 
         public void ChangePassword(Guid userId, string currentPassword, string newPassword, string confirmNewPassword)
         {
-            User user = _userRepository.FindByID(userId);
+            User user = _userRepository.FindById(userId);
 
             if (user == null) throw new ValidationException("The user not exists");
 

@@ -12,13 +12,11 @@ namespace AuroraCore.Domain.Model
         public IEnumerable<Topic> Topics { get; }
         public IEnumerable<MinidocCategory> Categories { get; }
 
-        public Minidoc(string title, string description, IEnumerable<Topic> topics, IEnumerable<MinidocCategory> categories, Channel channel)
+        public Minidoc(string title, string description, Channel channel)
         {
             Id = new Guid();
             Title = title;
             Description = description;
-            Topics = topics;
-            Categories = categories;
             Channel = channel;
         }
     }

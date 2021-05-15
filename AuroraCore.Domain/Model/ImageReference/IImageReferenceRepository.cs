@@ -2,7 +2,9 @@
 
 namespace AuroraCore.Domain.Model
 {
-    public interface IImageReferenceRepository: IRepository<ImageReference>
+    public interface IImageReferenceRepository
     {
+        void Store(ImageReference reference);
+        void Update(ImageReference reference);
     }
 }
