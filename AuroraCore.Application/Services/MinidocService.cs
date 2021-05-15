@@ -24,7 +24,7 @@ namespace AuroraCore.Application.Services
       var owner = _userRepository.FindByID(ownerId);
       var channel = _channelRepository.FindByID(creationParams.ChannelId);
 
-      var minidoc = new Minidoc(creationParams.Title, creationParams.Description);
+      // var minidoc = new Minidoc(creationParams.Title, creationParams.Description);
 
     }
 
