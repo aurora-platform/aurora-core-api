@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AuroraCore.Application.DTOs
+namespace AuroraCore.Application.DTOs.Channel
 {
     public class ChannelCreationParams
     {

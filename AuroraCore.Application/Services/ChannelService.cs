@@ -1,4 +1,4 @@
-﻿using AuroraCore.Application.DTOs;
+﻿using AuroraCore.Application.DTOs.Channel;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;

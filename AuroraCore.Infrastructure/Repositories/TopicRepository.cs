@@ -8,6 +8,11 @@ namespace AuroraCore.Infrastructure.Repositories
 {
     public class TopicRepository : ITopicRepository
     {
+        public int Count()
+        {
+            throw new NotImplementedException();
+        }
+
         public int Delete(Guid id)
         {
             throw new NotImplementedException();
@@ -22,6 +27,12 @@ namespace AuroraCore.Infrastructure.Repositories
         {
             using var connection = ConnectionFactory.GetConnection();
             return connection.Query<Topic>("SELECT * FROM topics");
+        }
+
+        public IEnumerable<Topic> GetByIds(Guid[] ids)
+        {
+            using var connection = ConnectionFactory.GetConnection();
+            return connection.Query<Topic>("SELECT * FROM topics WHERE id IN @ids", ids);
         }
 
         public void Store(Topic entity)

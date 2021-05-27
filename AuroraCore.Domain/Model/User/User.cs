@@ -143,5 +143,10 @@ namespace AuroraCore.Domain.Model
             var user = (User)obj;
             return user.Id == Id;
         }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
 }

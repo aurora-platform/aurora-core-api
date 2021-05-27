@@ -1,5 +1,5 @@
 using System;
-using AuroraCore.Application.DTOs;
+using AuroraCore.Application.DTOs.Minidoc;
 
 namespace AuroraCore.Application.Interfaces 
 {

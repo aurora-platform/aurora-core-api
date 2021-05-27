@@ -1,4 +1,4 @@
-﻿using AuroraCore.Application.DTOs;
+﻿using AuroraCore.Application.DTOs.Channel;
 using System;
 using System.Collections.Generic;
 
