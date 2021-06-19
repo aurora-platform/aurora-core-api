@@ -1,5 +1,6 @@
 ﻿using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
+using AuroraCore.Domain.Shared;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using System;
@@ -30,6 +31,12 @@ namespace AuroraCore.Infrastructure.Services
         {
             var bytes = Convert.FromBase64String(base64);
             var contents = new MemoryStream(bytes);
+
+            bool isJPG = base64.Substring(0, 1) == "/";
+            bool isPNG = base64.Substring(0, 1) == "i";
+
+            if (!isJPG && !isPNG)
+                throw new ValidationException("The file extension provided is not allowed. Only jpg and png are supported.");
 
             var uploadParams = new ImageUploadParams()
             {
