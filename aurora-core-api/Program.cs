@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace aurora_core_api
+namespace AuroraCore.Web
 {
     public class Program
     {

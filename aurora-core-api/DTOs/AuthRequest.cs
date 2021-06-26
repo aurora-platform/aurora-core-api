@@ -1,4 +1,4 @@
-﻿namespace aurora_core_api.DTOs
+﻿namespace AuroraCore.Web.DTOs
 {
     public class AuthRequest
     {

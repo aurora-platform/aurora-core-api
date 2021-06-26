@@ -1,4 +1,4 @@
-﻿using AuroraCore.Application.DTOs;
+﻿using AuroraCore.Application.DTOs.Channel;
 using System;
 using System.Collections.Generic;
 
@@ -12,7 +12,7 @@ namespace AuroraCore.Application.Interfaces
 
         void ChangeImage(Guid ownerId, Guid channelId, string imageBase64);
 
-        void Delete(Guid ownerId);
+        void Delete(Guid ownerId, Guid channelId);
 
         IEnumerable<ChannelResource> GetAllOwnedBy(Guid ownerId);
 

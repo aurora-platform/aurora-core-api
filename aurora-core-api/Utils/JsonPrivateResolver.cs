@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Serialization;
 using System.Reflection;
 
-namespace aurora_core_api.Utils
+namespace AuroraCore.Web.Utils
 {
     public class JsonPrivateResolver : DefaultContractResolver
     {

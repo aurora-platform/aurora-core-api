@@ -11,7 +11,7 @@ namespace AuroraCore.Infrastructure.Factories
         private static readonly string Password = "123";
         private static readonly string Port = "5432";
 
-        public static NpgsqlConnection GetConnection()
+        public static DbConnection GetConnection()
         {
             string connString = $"Server={Host};Username={User};Database={Database};Port={Port};Password={Password};SSLMode=Prefer";
             return new NpgsqlConnection(connString);

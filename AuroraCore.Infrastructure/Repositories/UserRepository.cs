@@ -2,9 +2,9 @@
 using AuroraCore.Infrastructure.Factories;
 using System;
 using Dapper;
-using Npgsql;
 using System.Collections.Generic;
 using System.Linq;
+using AuroraCore.Infrastructure.Utils;
 
 namespace AuroraCore.Infrastructure.Repositories
 {
@@ -16,7 +16,7 @@ namespace AuroraCore.Infrastructure.Repositories
             return connection.Execute("DELETE FROM users WHERE id = @id", new { id });
         }
 
-        public User FindByID(Guid id)
+        public User FindById(Guid id)
         {
             using var connection = ConnectionFactory.GetConnection();
             User user = connection.QuerySingleOrDefault<User>("SELECT * FROM users WHERE id = @id", new { id });
@@ -50,29 +50,10 @@ namespace AuroraCore.Infrastructure.Repositories
             );
 
             if (user.HasLikedTopics())
-            {
-                StoreLikedTopics(user.Id, user.LikedTopics, connection);
-            }
+                connection.BulkInsertRelation(user, user.LikedTopics);
 
             transaction.Commit();
             connection.Close();
-        }
-
-        private static string BuildPreparedStatement(Guid userId, IEnumerable<Topic> likedTopics)
-        {
-            var query = $"PREPARE bulkinsert (uuid, uuid) AS INSERT INTO users_topics (user_id, topic_id) VALUES ($1, $2);";
-
-            foreach (var topic in likedTopics)
-            {
-                query += $"EXECUTE bulkinsert('{userId}', '{topic.Id}');";
-            }
-
-            return query += "DEALLOCATE bulkinsert;";
-        }
-
-        public static void StoreLikedTopics(Guid userId, IEnumerable<Topic> likedTopics, NpgsqlConnection connection)
-        {
-            connection.Execute(BuildPreparedStatement(userId, likedTopics));
         }
 
         public void Update(User user)
@@ -111,13 +92,13 @@ namespace AuroraCore.Infrastructure.Repositories
             connection.Open();
             using var transaction = connection.BeginTransaction();
 
-            var hasLikedTopics = likedTopics != null && likedTopics.Any();
+            if (likedTopics is null || likedTopics.Any()) return;
 
-            if (hasLikedTopics)
-            {
-                connection.Execute("DELETE FROM users_topics WHERE user_id = @userId", new { userId });
-                StoreLikedTopics(userId, likedTopics, connection);
-            }
+            var user = new User();
+            user.SetId(userId);
+            user.SetLikedTopics(likedTopics);
+            connection.Execute("DELETE FROM users_topics WHERE user_id = @userId", new { userId });
+            connection.BulkInsertRelation(user, user.LikedTopics);
 
             transaction.Commit();
             connection.Close();

@@ -1,10 +1,10 @@
-﻿using aurora_core_api.Responses;
+﻿using AuroraCore.Web.Responses;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace aurora_core_api.Controllers
+namespace AuroraCore.Web.Controllers
 {
     [ApiController]
     public class TopicsController : ApiControllerBase
@@ -20,9 +20,7 @@ namespace aurora_core_api.Controllers
         [Route("topics")]
         public Response<IEnumerable<Topic>> GetAllTopics()
         {
-            IEnumerable<Topic> topics = _topicsService.GetAvailableTopics();
-
-            return Ok(topics);
+            return Ok(_topicsService.GetAvailableTopics());
         }
     }
 }

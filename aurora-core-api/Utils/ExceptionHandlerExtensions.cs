@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using System.Net;
 
-namespace aurora_core_api.Utils
+namespace AuroraCore.Web.Utils
 {
 	public static class ExceptionHandlerExtensions
 	{

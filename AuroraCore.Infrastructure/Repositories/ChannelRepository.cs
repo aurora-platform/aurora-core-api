@@ -18,7 +18,8 @@ namespace AuroraCore.Infrastructure.Repositories
 
         public int Delete(Guid id)
         {
-            throw new NotImplementedException();
+            using var connection = ConnectionFactory.GetConnection();
+            return connection.Execute("DELETE FROM channels WHERE id = @id", new { id });
         }
 
         public IEnumerable<Channel> FindAllByOwnerId(Guid ownerId)
@@ -42,7 +43,7 @@ namespace AuroraCore.Infrastructure.Repositories
            );
         }
 
-        public Channel FindByID(Guid id)
+        public Channel FindById(Guid id)
         {
             using var connection = ConnectionFactory.GetConnection();
 

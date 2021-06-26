@@ -7,7 +7,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/AuroraCore.UnitTests/AuroraCore.UnitTests.csproj",
+        "${workspaceFolder}/aurora-core-api/AuroraCore.Web.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -19,7 +19,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/AuroraCore.UnitTests/AuroraCore.UnitTests.csproj",
+        "${workspaceFolder}/aurora-core-api/AuroraCore.Web.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],
@@ -32,7 +32,7 @@
       "args": [
         "watch",
         "run",
-        "${workspaceFolder}/AuroraCore.UnitTests/AuroraCore.UnitTests.csproj",
+        "${workspaceFolder}/aurora-core-api/AuroraCore.Web.csproj",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
       ],

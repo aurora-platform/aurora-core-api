@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Validation = AuroraCore.Domain.Shared.Validate;
 
 namespace AuroraCore.Domain.Model
 {
@@ -37,37 +38,7 @@ namespace AuroraCore.Domain.Model
             Name = name;
         }
 
-        public User(
-            string name,
-            string username,
-            string password,
-            string email,
-            string phone,
-            ImageReference image,
-            string about,
-            bool isActivated,
-            bool isConfigured,
-            IEnumerable<Topic> likedTopics
-        )
-        {
-            Validation.NotNullOrWhiteSpace(username, "Username is required");
-            Validation.NotNullOrWhiteSpace(email, "Email is required");
-
-            if (!Regex.IsMatch(email, @"\S+@\S+\.\S+"))
-                throw new ValidationException("Invalid email");
-
-            Id = Guid.NewGuid();
-            Name = name;
-            Username = username;
-            Password = password;
-            Phone = phone;
-            Email = email;
-            Image = image;
-            AboutMe = about;
-            IsActivated = isActivated;
-            IsConfigured = isConfigured;
-            LikedTopics = likedTopics;
-        }
+        public void SetId(Guid id) => Id = id;
 
         public bool HasLikedTopics() => LikedTopics != null && LikedTopics.Any();
 
@@ -78,12 +49,6 @@ namespace AuroraCore.Domain.Model
         public void SetLikedTopics(IEnumerable<Topic> topics) => LikedTopics = topics;
 
         public void SetPassword(string hashedPassword) => Password = hashedPassword;
-
-        public void SetEmail(string email)
-        {
-            Validation.NotNullOrWhiteSpace(email, "Email is required");
-            Email = email;
-        }
 
         public void SetName(string name)
         {
@@ -142,6 +107,11 @@ namespace AuroraCore.Domain.Model
 
             var user = (User)obj;
             return user.Id == Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
         }
     }
 }

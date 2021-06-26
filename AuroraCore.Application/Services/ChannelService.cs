@@ -1,4 +1,4 @@
-﻿using AuroraCore.Application.DTOs;
+﻿using AuroraCore.Application.DTOs.Channel;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
@@ -29,7 +29,7 @@ namespace AuroraCore.Application.Services
 
         public ChannelResource Create(Guid ownerId, ChannelCreationParams creationParams)
         {
-            User owner = _userRepository.FindByID(ownerId);
+            User owner = _userRepository.FindById(ownerId);
             var channel = new Channel(owner, creationParams.Name, creationParams.About);
 
             if (!string.IsNullOrEmpty(creationParams.ImageBase64))
@@ -45,8 +45,8 @@ namespace AuroraCore.Application.Services
 
         public void Edit(Guid ownerId, ChannelEditionParams editionParams)
         {
-            User owner = _userRepository.FindByID(ownerId);
-            Channel channel = _channelRepository.FindByID(editionParams.Id);
+            User owner = _userRepository.FindById(ownerId);
+            Channel channel = _channelRepository.FindById(editionParams.Id);
 
             if (channel is null)
                 throw new ValidationException("The specified channel was not found");
@@ -62,7 +62,7 @@ namespace AuroraCore.Application.Services
 
         public ChannelResource GetOne(Guid channelId)
         {
-            Channel channel = _channelRepository.FindByID(channelId);
+            Channel channel = _channelRepository.FindById(channelId);
             return _mapper.Map<ChannelResource>(channel);
         }
 
@@ -72,15 +72,21 @@ namespace AuroraCore.Application.Services
             return _mapper.Map<IEnumerable<ChannelResource>>(channels);
         }
 
-        public void Delete(Guid id)
+        public void Delete(Guid ownerId, Guid id)
         {
+            User owner = _userRepository.FindById(ownerId);
+            Channel channel = _channelRepository.FindById(id);
+
+            if (!channel.HasOwner(owner))
+                throw new ValidationException("This user is not the owner of this channel");
+
             _channelRepository.Delete(id);  
         }
 
         public void ChangeImage(Guid ownerId, Guid channelId, string imageBase64)
         {
-            User owner = _userRepository.FindByID(ownerId);
-            Channel channel = _channelRepository.FindByID(channelId);
+            User owner = _userRepository.FindById(ownerId);
+            Channel channel = _channelRepository.FindById(channelId);
 
             if (channel == null)
                 throw new ValidationException("The specified channel was not found");

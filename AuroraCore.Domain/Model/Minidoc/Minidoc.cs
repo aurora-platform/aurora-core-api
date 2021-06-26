@@ -1,26 +1,70 @@
 ﻿using System;
 using System.Collections.Generic;
+using AuroraCore.Domain.Shared;
 
 namespace AuroraCore.Domain.Model
 {
     public class Minidoc
     {
-        public Minidoc(string title, string description, IEnumerable<Topic> topics)
+        public Guid Id { get; private set; }
+        public string Title { get; private set; }
+        public string Description { get; private set; }
+        public Channel Channel { get; private set; }
+        public VideoReference Video { get; private set; }
+        public IList<Topic> Topics { get; private set; }
+        public IList<MinidocCategory> Categories { get; private set; }
+
+        public Minidoc() { }
+
+        public Minidoc(string title, string description, VideoReference video, Channel channel, IList<Topic> topics, IList<MinidocCategory> categories)
         {
-            Id = new Guid();
+            Validate.NotNullOrWhiteSpace(title, "The title is required");   
+            Validate.NotNull(channel, "The channel is required");  
+            Validate.NotNull(video, "The video reference is required");   
+
+             if (topics.Count > 3)
+                throw new ValidationException("The number of topics must be less than or equal to 3");
+
+            if (categories.Count > 3)
+                throw new ValidationException("The number of categories must be less than or equal to 3");
+
+            Id = Guid.NewGuid();
             Title = title;
             Description = description;
             Topics = topics;
+            Categories = categories;
+            Channel = channel;
+            Video = video;
         }
 
-        public Guid Id { get; }
+        public void SetTitle(string title)
+        {
+            Title = title;
+        }
 
-        public string Title { get; }
+        public void SetDescription(string description)
+        {
+            Description = description;
+        }
 
-        public string Description { get; }
+        public void SetTopics(IList<Topic> topics)
+        {
+            Topics = topics;
+        }
 
-        public IEnumerable<Topic> Topics { get; }
+        public void SetCategories(IList<MinidocCategory> categories)
+        {
+            Categories = categories;
+        }
 
-        public IEnumerable<MinidocCategory> Categories { get; }
+        public void SetChannel(Channel channel)
+        {
+            Channel = channel;
+        }
+
+        public void SetVideo(VideoReference reference)
+        {
+            Video = reference;
+        }
     }
 }

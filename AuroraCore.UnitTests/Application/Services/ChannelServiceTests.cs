@@ -1,4 +1,5 @@
 ﻿using AuroraCore.Application.DTOs;
+using AuroraCore.Application.DTOs.Channel;
 using AuroraCore.Application.Services;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
@@ -277,7 +278,7 @@ namespace AuroraCore.UnitTests.Application.Services
                 Name = "Channel2"
             });
 
-            _channelService.Delete(channel.Id);
+            _channelService.Delete(user.Id, channel.Id);
 
             Assert.Null(_channelService.GetOne(channel.Id));
         }

@@ -1,8 +1,12 @@
-﻿using AuroraCore.Domain.Shared;
+﻿using System.Collections.Generic;
+using System;
 
 namespace AuroraCore.Domain.Model
 {
-    public interface ITopicRepository : IRepository<Topic>
+    public interface ITopicRepository
     {
+        int Count();
+        IList<Topic> GetAll();
+        IList<Topic> GetByIds(Guid[] ids);
     }
 }

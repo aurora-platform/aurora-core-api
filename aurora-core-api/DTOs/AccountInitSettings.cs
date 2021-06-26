@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace aurora_core_api.DTOs
+namespace AuroraCore.Web.DTOs
 {
     public class AccountInitSettings
     {
