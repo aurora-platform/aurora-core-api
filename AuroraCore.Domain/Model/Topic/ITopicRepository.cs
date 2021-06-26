@@ -6,7 +6,7 @@ namespace AuroraCore.Domain.Model
     public interface ITopicRepository
     {
         int Count();
-        IEnumerable<Topic> GetAll();
-        IEnumerable<Topic> GetByIds(Guid[] ids);
+        IList<Topic> GetAll();
+        IList<Topic> GetByIds(Guid[] ids);
     }
 }

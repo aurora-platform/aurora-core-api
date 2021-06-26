@@ -12,7 +12,7 @@ namespace AuroraCore.Application.Interfaces
 
         void ChangeImage(Guid ownerId, Guid channelId, string imageBase64);
 
-        void Delete(Guid ownerId);
+        void Delete(Guid ownerId, Guid channelId);
 
         IEnumerable<ChannelResource> GetAllOwnedBy(Guid ownerId);
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace aurora_core_api.Utils
+namespace AuroraCore.Web.Utils
 {
     public class CurrentUser
     {

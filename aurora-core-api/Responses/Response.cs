@@ -1,4 +1,4 @@
-﻿namespace aurora_core_api.Responses
+﻿namespace AuroraCore.Web.Responses
 {
     public class Response<T>
     {

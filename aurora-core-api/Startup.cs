@@ -1,4 +1,4 @@
-using aurora_core_api.Utils;
+using AuroraCore.Web.Utils;
 using AuroraCore.Infrastructure.Logging;
 using AuroraCore.Infrastructure.Providers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -10,9 +10,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
-using Infrastructure = AuroraCore.Infrastructure.Startup;
+using Infra = AuroraCore.Infrastructure.Startup;
+using Microsoft.AspNetCore.Http.Features;
+using System;
 
-namespace aurora_core_api
+namespace AuroraCore.Web
 {
     public class Startup
     {
@@ -76,7 +78,7 @@ namespace aurora_core_api
                 endpoints.MapControllers();
             });
 
-            Infrastructure.Configure();
+            Infra.Configure();
         }
     }
 }

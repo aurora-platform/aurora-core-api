@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using AuroraCore.Domain.Shared;
 
 namespace AuroraCore.Domain.Model
 {
@@ -9,17 +10,31 @@ namespace AuroraCore.Domain.Model
         public string Title { get; private set; }
         public string Description { get; private set; }
         public Channel Channel { get; private set; }
-        public IEnumerable<Topic> Topics { get; private set; }
-        public IEnumerable<MinidocCategory> Categories { get; private set; }
+        public VideoReference Video { get; private set; }
+        public IList<Topic> Topics { get; private set; }
+        public IList<MinidocCategory> Categories { get; private set; }
 
-        public Minidoc(string title, string description, Channel channel, IEnumerable<Topic> topics, IEnumerable<MinidocCategory> categories)
+        public Minidoc() { }
+
+        public Minidoc(string title, string description, VideoReference video, Channel channel, IList<Topic> topics, IList<MinidocCategory> categories)
         {
-            Id = new Guid();
+            Validate.NotNullOrWhiteSpace(title, "The title is required");   
+            Validate.NotNull(channel, "The channel is required");  
+            Validate.NotNull(video, "The video reference is required");   
+
+             if (topics.Count > 3)
+                throw new ValidationException("The number of topics must be less than or equal to 3");
+
+            if (categories.Count > 3)
+                throw new ValidationException("The number of categories must be less than or equal to 3");
+
+            Id = Guid.NewGuid();
             Title = title;
             Description = description;
             Topics = topics;
             Categories = categories;
             Channel = channel;
+            Video = video;
         }
 
         public void SetTitle(string title)
@@ -32,14 +47,24 @@ namespace AuroraCore.Domain.Model
             Description = description;
         }
 
-        public void SetTopics(IEnumerable<Topic> topics)
+        public void SetTopics(IList<Topic> topics)
         {
             Topics = topics;
         }
 
-        public void SetCategories(IEnumerable<MinidocCategory> categories)
+        public void SetCategories(IList<MinidocCategory> categories)
         {
             Categories = categories;
+        }
+
+        public void SetChannel(Channel channel)
+        {
+            Channel = channel;
+        }
+
+        public void SetVideo(VideoReference reference)
+        {
+            Video = reference;
         }
     }
 }

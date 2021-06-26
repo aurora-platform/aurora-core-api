@@ -1,11 +1,11 @@
-﻿using aurora_core_api.Responses;
-using aurora_core_api.Utils;
+﻿using AuroraCore.Web.Responses;
+using AuroraCore.Web.Utils;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Net;
 using System.Security.Claims;
 
-namespace aurora_core_api.Controllers
+namespace AuroraCore.Web.Controllers
 {
     public class ApiControllerBase : ControllerBase
     {

@@ -1,5 +1,5 @@
-﻿using aurora_core_api.DTOs;
-using aurora_core_api.Responses;
+﻿using AuroraCore.Web.DTOs;
+using AuroraCore.Web.Responses;
 using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
-namespace aurora_core_api.Controllers
+namespace AuroraCore.Web.Controllers
 {
     [Authorize]
     [ApiController]

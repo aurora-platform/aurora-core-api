@@ -1,13 +1,13 @@
 using System;
-using System.IO;
+using Microsoft.AspNetCore.Http;
 
-namespace AuroraCore.Application.DTOs.Minidoc
+namespace AuroraCore.Web.DTOs
 {
-    public class MinidocEditionParams
+    public class MinidocEdition
     {
         public string Title { get; set; }
         public string Description { get; set; }
-        public MemoryStream Video { get; set; }
+        public IFormFile File { get; set; }
         public Guid[] Topics { get; set; }
         public Guid[] Categories { get; set; }
     }

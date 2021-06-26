@@ -1,5 +1,5 @@
-﻿using aurora_core_api.Responses;
-using AuroraCore.Application.DTOs;
+﻿using AuroraCore.Web.Responses;
+using AuroraCore.Application.DTOs.Channel;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 
-namespace aurora_core_api.Controllers
+namespace AuroraCore.Web.Controllers
 {
     [Authorize]
     [ApiController]
@@ -44,6 +44,21 @@ namespace aurora_core_api.Controllers
             {
                 _channelService.Edit(GetCurrentUser().Id, channel);
                 return Ok("Channel edited successfully");
+            }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete]
+        [Route("channels/{id}")]
+        public Response<object> DeleteChannel(Guid id)
+        {
+            try
+            {
+                _channelService.Delete(GetCurrentUser().Id, id);
+                return Ok("Channel created successfully");
             }
             catch (ValidationException ex)
             {

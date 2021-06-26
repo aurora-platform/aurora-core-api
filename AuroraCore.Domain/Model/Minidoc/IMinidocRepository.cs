@@ -10,11 +10,7 @@ namespace AuroraCore.Domain.Model
         void Delete(Guid id);
         Minidoc FindById(Guid id);
         IEnumerable<Minidoc> FindByChannel(Guid channelId);
-        IEnumerable<Minidoc> FindByTopics(IEnumerable<Topic> topics);
-        IEnumerable<Minidoc> FindByCategory(Guid categoryId);
-        IEnumerable<Minidoc> FindByNameOrCreator(string searchParam);
-        IEnumerable<MinidocCategory> GetAllCategories();
-        IEnumerable<MinidocCategory> GetCategoriesByIds(Guid[] ids);
-        int CountCategories();
+        IList<MinidocCategory> GetCategoriesByIds(Guid[] ids);
+        IList<MinidocCategory> GetAllCategories();
     }
 }

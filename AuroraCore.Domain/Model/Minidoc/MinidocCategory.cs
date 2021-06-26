@@ -5,10 +5,12 @@ namespace AuroraCore.Domain.Model
 {
     public class MinidocCategory
     {
+        public MinidocCategory() { }
+
         public MinidocCategory(string name, string imageURL)
         {
-            Validation.NotNullOrWhiteSpace(name, "Name is required");
-            Validation.NotNullOrWhiteSpace(imageURL, "ImageURL is required");
+            Validate.NotNullOrWhiteSpace(name, "Name is required");
+            Validate.NotNullOrWhiteSpace(imageURL, "ImageURL is required");
 
             Id = new Guid();
             Name = name;

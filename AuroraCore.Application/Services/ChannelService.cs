@@ -72,8 +72,14 @@ namespace AuroraCore.Application.Services
             return _mapper.Map<IEnumerable<ChannelResource>>(channels);
         }
 
-        public void Delete(Guid id)
+        public void Delete(Guid ownerId, Guid id)
         {
+            User owner = _userRepository.FindById(ownerId);
+            Channel channel = _channelRepository.FindById(id);
+
+            if (!channel.HasOwner(owner))
+                throw new ValidationException("This user is not the owner of this channel");
+
             _channelRepository.Delete(id);  
         }
 

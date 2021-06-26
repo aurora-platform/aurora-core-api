@@ -15,8 +15,8 @@ namespace AuroraCore.Domain.Model
 
         public Channel(User owner, string name, string about = null, ImageReference image = null)
         {
-            Validation.NotNull(owner, "Owner is required");
-            Validation.NotNullOrWhiteSpace(name, "Name is required");
+            Validate.NotNull(owner, "Owner is required");
+            Validate.NotNullOrWhiteSpace(name, "Name is required");
 
             if (!owner.IsValid())
                 throw new ValidationException("Owner is not valid");
@@ -55,7 +55,7 @@ namespace AuroraCore.Domain.Model
 
         public bool HasOwner(User owner)
         {
-            Validation.NotNull(owner, "Owner is required");
+            Validate.NotNull(owner, "Owner is required");
 
             if (!owner.IsValid())
                 throw new ValidationException("The owner is invalid");
