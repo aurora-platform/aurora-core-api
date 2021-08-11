@@ -2,7 +2,7 @@
 using Sentry;
 using System;
 
-namespace AuroraCore.Infrastructure.Logging
+namespace AuroraCore.Infrastructure.Services
 {
     public class SentryLogger : ILogger
     {

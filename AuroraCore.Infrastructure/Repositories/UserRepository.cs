@@ -1,10 +1,10 @@
 ﻿using AuroraCore.Domain.Model;
 using AuroraCore.Infrastructure.Factories;
-using System;
+using AuroraCore.Infrastructure.Utils;
 using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using AuroraCore.Infrastructure.Utils;
 
 namespace AuroraCore.Infrastructure.Repositories
 {
@@ -105,4 +105,3 @@ namespace AuroraCore.Infrastructure.Repositories
         }
     }
 }
- 

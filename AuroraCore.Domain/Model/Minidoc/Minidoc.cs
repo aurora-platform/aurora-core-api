@@ -1,6 +1,6 @@
-﻿using System;
+﻿using AuroraCore.Domain.Shared;
+using System;
 using System.Collections.Generic;
-using AuroraCore.Domain.Shared;
 
 namespace AuroraCore.Domain.Model
 {
@@ -14,15 +14,16 @@ namespace AuroraCore.Domain.Model
         public IList<Topic> Topics { get; private set; }
         public IList<MinidocCategory> Categories { get; private set; }
 
-        public Minidoc() { }
-
-        public Minidoc(string title, string description, VideoReference video, Channel channel, IList<Topic> topics, IList<MinidocCategory> categories)
+        public Minidoc()
         {
-            Validate.NotNullOrWhiteSpace(title, "The title is required");   
-            Validate.NotNull(channel, "The channel is required");  
-            Validate.NotNull(video, "The video reference is required");   
+        }
 
-             if (topics.Count > 3)
+        public Minidoc(string title, string description, int duration, Channel channel, IList<Topic> topics, IList<MinidocCategory> categories)
+        {
+            Validate.NotNullOrWhiteSpace(title, "The title is required");
+            Validate.NotNull(channel, "The channel is required");
+            
+            if (topics.Count > 3)
                 throw new ValidationException("The number of topics must be less than or equal to 3");
 
             if (categories.Count > 3)
@@ -34,7 +35,7 @@ namespace AuroraCore.Domain.Model
             Topics = topics;
             Categories = categories;
             Channel = channel;
-            Video = video;
+            Video = new VideoReference(duration);
         }
 
         public void SetTitle(string title)
@@ -65,6 +66,16 @@ namespace AuroraCore.Domain.Model
         public void SetVideo(VideoReference reference)
         {
             Video = reference;
+        }
+
+        public void PrepareToStream()
+        {
+            Video.ProcessingStatus = VideoProcessingStatus.Ready;
+        }
+
+        public void MarkAsFailedToStream()
+        {
+            Video.ProcessingStatus = VideoProcessingStatus.Failed;
         }
     }
 }

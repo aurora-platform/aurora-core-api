@@ -1,6 +1,8 @@
-using AuroraCore.Web.Utils;
-using AuroraCore.Infrastructure.Logging;
+using Amazon;
+using Amazon.Runtime.CredentialManagement;
 using AuroraCore.Infrastructure.Providers;
+using AuroraCore.Infrastructure.Services;
+using AuroraCore.Web.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -11,8 +13,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.IdentityModel.Tokens.Jwt;
 using Infra = AuroraCore.Infrastructure.Startup;
-using Microsoft.AspNetCore.Http.Features;
-using System;
 
 namespace AuroraCore.Web
 {
@@ -24,6 +24,20 @@ namespace AuroraCore.Web
 
         public Startup(IConfiguration configuration)
         {
+            var options = new CredentialProfileOptions
+            {
+                AccessKey = "AKIA4QTFP2NPEYLZZY6C",
+                SecretKey = "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"
+            };
+
+            var profile = new CredentialProfile("default", options)
+            {
+                Region = RegionEndpoint.USWest2
+            };
+
+            var sharedFile = new SharedCredentialsFile();
+            sharedFile.RegisterProfile(profile);
+
             Configuration = configuration;
             _jwtTokenProvider = new JwtTokenProvider();
         }

@@ -36,7 +36,8 @@ namespace AuroraCore.UnitTests.Application.Services
         [Fact]
         public void Create_ThrowsValidationException_WhenOwnerNotExists()
         {
-            var parameters = new ChannelCreationParams {
+            var parameters = new ChannelCreationParams
+            {
                 Name = "Test channel",
                 About = "Test channel description",
                 ImageBase64 = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVQYV2NgYAAAAAMAAWgmWQ0AAAAASUVORK5CYII="
@@ -59,7 +60,6 @@ namespace AuroraCore.UnitTests.Application.Services
 
             Assert.Throws<ValidationException>(() => _channelService.Create(user.Id, parameters));
         }
-
 
         [Fact]
         public void Create_ThrowsValidationException_WhenNameIsEmpty()

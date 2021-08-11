@@ -1,9 +1,9 @@
-﻿using AuroraCore.Web.DTOs;
-using AuroraCore.Web.Responses;
-using AuroraCore.Application.DTOs;
+﻿using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
+using AuroraCore.Web.DTOs;
+using AuroraCore.Web.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -80,7 +80,6 @@ namespace AuroraCore.Web.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
 
         [HttpPut]
         [Route("me/password")]

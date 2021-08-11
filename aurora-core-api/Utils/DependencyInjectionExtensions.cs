@@ -10,8 +10,8 @@ namespace AuroraCore.Web.Utils
 {
     public static class DependencyInjectionExtensions
     {
-		public static void AddDependencies(this IServiceCollection services)
-		{
+        public static void AddDependencies(this IServiceCollection services)
+        {
             var mapper = MapperFactory.Create();
             var topicRepository = new TopicRepository();
             var channelRepository = new ChannelRepository();
@@ -22,8 +22,8 @@ namespace AuroraCore.Web.Utils
             services.AddSingleton<ITopicService>(new TopicService(topicRepository));
             services.AddSingleton<IUserService>(new UserService(userRepository, mapper, bcryptHashProvider));
             services.AddSingleton<IChannelService>(new ChannelService(channelRepository, userRepository, new CloudinaryImageStorageService(), mapper));
-            services.AddSingleton<IMinidocService>(new MinidocService(channelRepository, topicRepository, new MinidocRepository(), userRepository, mapper, new GoogleCloudStorage()));
+            services.AddSingleton<IMinidocService>(new MinidocService(channelRepository, topicRepository, new MinidocRepository(), userRepository, mapper, new AwsElasticTranscoder()));
             services.AddSingleton<IJwtTokenProvider>(new JwtTokenProvider());
         }
-	}
+    }
 }

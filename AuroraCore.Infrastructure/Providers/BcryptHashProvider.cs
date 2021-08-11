@@ -1,5 +1,4 @@
 ﻿using AuroraCore.Application.Interfaces;
-using System;
 using Bcrypt = BCrypt.Net.BCrypt;
 
 namespace AuroraCore.Infrastructure.Providers

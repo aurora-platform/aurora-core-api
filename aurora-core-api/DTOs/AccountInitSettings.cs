@@ -1,5 +1,4 @@
 ﻿using AuroraCore.Domain.Model;
-using System;
 using System.Collections.Generic;
 
 namespace AuroraCore.Web.DTOs

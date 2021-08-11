@@ -18,7 +18,7 @@ namespace AuroraCore.Application.Services
             IChannelRepository channelRepository,
             IUserRepository userRepository,
             IImageStorageService imageStorageService,
-            IObjectMapper mapper 
+            IObjectMapper mapper
         )
         {
             _channelRepository = channelRepository;
@@ -39,7 +39,7 @@ namespace AuroraCore.Application.Services
             }
 
             _channelRepository.Store(channel);
-            
+
             return _mapper.Map<ChannelResource>(channel);
         }
 
@@ -56,7 +56,7 @@ namespace AuroraCore.Application.Services
 
             channel.SetName(editionParams.Name);
             channel.SetAbout(editionParams.About);
-            
+
             _channelRepository.Update(channel);
         }
 
@@ -80,7 +80,7 @@ namespace AuroraCore.Application.Services
             if (!channel.HasOwner(owner))
                 throw new ValidationException("This user is not the owner of this channel");
 
-            _channelRepository.Delete(id);  
+            _channelRepository.Delete(id);
         }
 
         public void ChangeImage(Guid ownerId, Guid channelId, string imageBase64)

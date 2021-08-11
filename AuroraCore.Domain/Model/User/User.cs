@@ -21,7 +21,9 @@ namespace AuroraCore.Domain.Model
         public bool IsConfigured { get; private set; }
         public IEnumerable<Topic> LikedTopics { get; private set; }
 
-        public User() { }
+        public User()
+        {
+        }
 
         public User(string username, string email, string name)
         {
@@ -44,7 +46,7 @@ namespace AuroraCore.Domain.Model
 
         public void SetAsConfigured() => IsConfigured = true;
 
-        public void SetAsActive() =>  IsActivated = true;
+        public void SetAsActive() => IsActivated = true;
 
         public void SetLikedTopics(IEnumerable<Topic> topics) => LikedTopics = topics;
 

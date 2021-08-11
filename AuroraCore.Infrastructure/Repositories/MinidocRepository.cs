@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using AuroraCore.Domain.Model;
 using AuroraCore.Infrastructure.Factories;
 using AuroraCore.Infrastructure.Utils;
 using Dapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace AuroraCore.Infrastructure.Repositories
 {
@@ -61,7 +61,7 @@ namespace AuroraCore.Infrastructure.Repositories
 
                     minidocEntry.SetChannel(channel);
                     minidocEntry.Topics.Add(topic);
-                    
+
                     return minidocEntry;
                 },
                 new { id },
@@ -75,7 +75,7 @@ namespace AuroraCore.Infrastructure.Repositories
                     WHERE mmc.minidoc_id = @minidocId",
                     new { minidocId = minidoc.Id }
                 ).ToList()
-            ); 
+            );
 
             return minidoc;
         }

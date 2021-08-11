@@ -1,7 +1,7 @@
-using System;
-using System.Collections.Generic;
 using AuroraCore.Application.DTOs.Channel;
 using AuroraCore.Domain.Model;
+using System;
+using System.Collections.Generic;
 
 namespace AuroraCore.Application.DTOs.Minidoc
 {

@@ -1,9 +1,9 @@
-﻿using AuroraCore.Web.DTOs;
-using AuroraCore.Web.Responses;
-using AuroraCore.Application.DTOs;
+﻿using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Shared;
 using AuroraCore.Infrastructure.Providers;
+using AuroraCore.Web.DTOs;
+using AuroraCore.Web.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

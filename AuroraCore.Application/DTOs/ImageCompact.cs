@@ -1,5 +1,4 @@
-﻿
-namespace AuroraCore.Application.DTOs
+﻿namespace AuroraCore.Application.DTOs
 {
     public class ImageCompact
     {

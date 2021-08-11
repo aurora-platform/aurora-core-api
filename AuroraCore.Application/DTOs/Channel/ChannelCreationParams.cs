@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace AuroraCore.Application.DTOs.Channel
+﻿namespace AuroraCore.Application.DTOs.Channel
 {
     public class ChannelCreationParams
     {

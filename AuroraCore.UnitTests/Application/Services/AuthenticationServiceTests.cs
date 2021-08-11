@@ -1,6 +1,5 @@
 ﻿using AuroraCore.Application.DTOs;
 using AuroraCore.Application.Services;
-using AuroraCore.Domain.Model;
 using AuroraCore.Domain.Shared;
 using AuroraCore.Infrastructure.Factories;
 using AuroraCore.Infrastructure.Providers;
@@ -10,7 +9,6 @@ using Xunit;
 
 namespace AuroraCore.UnitTests.Application.Services
 {
-
     public class AuthenticationServiceTests : IDisposable
     {
         private AuthenticationService _authenticationService;

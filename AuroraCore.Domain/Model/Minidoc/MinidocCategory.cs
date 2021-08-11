@@ -5,7 +5,9 @@ namespace AuroraCore.Domain.Model
 {
     public class MinidocCategory
     {
-        public MinidocCategory() { }
+        public MinidocCategory()
+        {
+        }
 
         public MinidocCategory(string name, string imageURL)
         {

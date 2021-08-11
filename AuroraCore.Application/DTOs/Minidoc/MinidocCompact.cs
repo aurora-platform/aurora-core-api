@@ -1,5 +1,5 @@
-using System;
 using AuroraCore.Application.DTOs.Channel;
+using System;
 
 namespace AuroraCore.Application.DTOs.Minidoc
 {

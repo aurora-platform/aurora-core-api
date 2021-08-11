@@ -1,6 +1,6 @@
-﻿using AuroraCore.Web.Responses;
-using AuroraCore.Application.Interfaces;
+﻿using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Model;
+using AuroraCore.Web.Responses;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 
@@ -24,4 +24,3 @@ namespace AuroraCore.Web.Controllers
         }
     }
 }
- 

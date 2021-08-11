@@ -5,7 +5,9 @@ namespace AuroraCore.Domain.Model
 {
     public class Topic
     {
-        public Topic() { }
+        public Topic()
+        {
+        }
 
         public Topic(string name)
         {
@@ -14,8 +16,8 @@ namespace AuroraCore.Domain.Model
             Name = name;
         }
 
-        public Guid Id { get; private set; } 
-    
+        public Guid Id { get; private set; }
+
         public string Name { get; private set; }
 
         public string ImageURL { get; private set; }

@@ -1,7 +1,7 @@
-﻿using AuroraCore.Web.Responses;
-using AuroraCore.Application.DTOs.Channel;
+﻿using AuroraCore.Application.DTOs.Channel;
 using AuroraCore.Application.Interfaces;
 using AuroraCore.Domain.Shared;
+using AuroraCore.Web.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;

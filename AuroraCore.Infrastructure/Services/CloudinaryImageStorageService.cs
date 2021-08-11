@@ -24,7 +24,7 @@ namespace AuroraCore.Infrastructure.Services
         public void Delete(ImageReference image)
         {
             string[] publicIds = { image.ExternalId };
-             _cloudinary.DeleteResources(ResourceType.Image, publicIds);
+            _cloudinary.DeleteResources(ResourceType.Image, publicIds);
         }
 
         public ImageReference Store(string filename, string base64)

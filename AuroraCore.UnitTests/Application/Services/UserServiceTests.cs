@@ -24,7 +24,7 @@ namespace AuroraCore.UnitTests.Application.Services
             _userService = new UserService(repository, MapperFactory.Create(), new BcryptHashProvider());
             _authenticationService = new AuthenticationService(repository, new BcryptHashProvider(), MapperFactory.Create());
         }
-         
+
         public void Dispose()
         {
             _userService = null;
@@ -88,7 +88,7 @@ namespace AuroraCore.UnitTests.Application.Services
         }
 
         /**
-         * EditLikedTopics 
+         * EditLikedTopics
          */
 
         [Fact]
@@ -169,7 +169,7 @@ namespace AuroraCore.UnitTests.Application.Services
         }
 
         /**
-         * GetProfile 
+         * GetProfile
          */
 
         [Fact]
@@ -196,13 +196,12 @@ namespace AuroraCore.UnitTests.Application.Services
         }
 
         /**
-         * EditProfile 
+         * EditProfile
          */
 
         [Fact]
         public void EditProfile_ThrowsValidationException_WhenUsernameIsNullOrEmpty()
         {
-
             UserResource createdUser = _userService.Create("username", "user@email.com", "Password@123");
 
             _userService.SetupInitialSettings(createdUser.Id, "User Name", new List<Topic>
@@ -220,7 +219,6 @@ namespace AuroraCore.UnitTests.Application.Services
                 Phone = createdUser.Phone
             }));
         }
-
 
         [Fact]
         public void EditProfile_ThrowsValidationException_WhenUserNotExists()
@@ -251,7 +249,7 @@ namespace AuroraCore.UnitTests.Application.Services
         }
 
         /**
-         * ChangePassword 
+         * ChangePassword
          */
 
         [Fact]

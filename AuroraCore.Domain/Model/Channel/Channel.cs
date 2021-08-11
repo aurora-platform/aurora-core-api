@@ -11,7 +11,9 @@ namespace AuroraCore.Domain.Model
         public User Owner { get; private set; }
         public ImageReference Image { get; private set; }
 
-        public Channel() { }
+        public Channel()
+        {
+        }
 
         public Channel(User owner, string name, string about = null, ImageReference image = null)
         {

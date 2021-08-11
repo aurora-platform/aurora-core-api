@@ -65,7 +65,7 @@ namespace AuroraCore.Application.Services
 
             user.SetName(name);
             user.SetLikedTopics(likedTopics);
-            user.SetAsConfigured(); 
+            user.SetAsConfigured();
 
             _userRepository.Update(user);
         }

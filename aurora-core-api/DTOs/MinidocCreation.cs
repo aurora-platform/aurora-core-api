@@ -1,5 +1,5 @@
-using System;
 using Microsoft.AspNetCore.Http;
+using System;
 
 namespace AuroraCore.Web.DTOs
 {

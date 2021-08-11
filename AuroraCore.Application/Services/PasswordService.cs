@@ -39,13 +39,15 @@ namespace AuroraCore.Application.Services
 
         public void Verify(string password, string hash)
         {
-           if (!_hashProvider.IsEqual(password, hash))
+            if (!_hashProvider.IsEqual(password, hash))
                 throw new InvalidPasswordException("Invalid password");
         }
 
         public class InvalidPasswordException : ValidationException
         {
-            public InvalidPasswordException(string message): base(message) { }
+            public InvalidPasswordException(string message) : base(message)
+            {
+            }
         }
     }
 }

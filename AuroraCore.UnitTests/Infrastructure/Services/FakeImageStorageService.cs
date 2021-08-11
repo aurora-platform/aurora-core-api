@@ -8,12 +8,12 @@ namespace AuroraCore.UnitTests.Infrastructure.Services
     {
         public void Delete(ImageReference image)
         {
-            
         }
 
         public ImageReference Store(string filename, string base64)
         {
-            return new ImageReference {
+            return new ImageReference
+            {
                 Bytes = 1024,
                 ExternalId = "aaaaaaa",
                 Filename = filename,
